@@ -1,0 +1,57 @@
+// Khai báo lớp tài khoản: chỉ có getter và setter, constructor và hàm * login *.
+// Đây là lớp trong java (bình thường).
+
+public class UserAccount {
+    private String username;
+    private String password;
+    private String userType; // (customer, employee)
+    private int referenceID;
+
+    UserAccount() {
+        this.username = "";
+        this.password = "";
+        this.userType = "customer";
+    }
+    UserAccount(String username, String password, String userType, int referenceID) {
+        this.username = username;
+        this.password = password;
+        this.userType = userType;
+        this.referenceID = referenceID;
+    }
+
+    // setter
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public void setType(String type) {
+        this.userType = type;
+    }
+
+    // getter
+    public String getUsername() {
+        return this.username;
+    }
+    public String getPassword() {
+        return this.password;
+    }
+    public String getUserType() {
+        return this.userType;
+    }
+    public int getReferenceID() {
+        return this.referenceID;
+    }
+
+    // login: trả về true nếu username tồn tại vaf password đúng với username đó.
+    public boolean login(String username, String password) {
+        UserAccountDAO user_dao = new UserAccountDAO();
+        UserAccount tmp = user_dao.getUserAccount(username);
+        if(tmp == null) return false;
+
+        if(!tmp.getPassword().equals(password)) return false;
+
+        return true;
+    }
+}
