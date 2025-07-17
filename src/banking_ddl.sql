@@ -107,7 +107,6 @@ create table user_account (
 	username varchar(100) NOT NULL PRIMARY KEY,
     password varchar(100) NOT NULL,
     user_type nvarchar(100),
-    reference_id INT NOT NULL, -- Không dùng FK trỏ tới bảng nào hết, vì có 2 bảng nhân viên và khách hàng -> Xử lý việc này bằng java.
     CONSTRAINT CHK_user_acount_type CHECK (user_type IN ('customer', 'employee'))
 );
 
@@ -245,14 +244,14 @@ VALUES
 INSERT INTO user_account (username, password, user_type, reference_id)
 VALUES
 -- Tài khoản khách hàng
-('cus01', 'pass01', 'customer', 1),
-('cus02', 'pass02', 'customer', 2),
-('cus03', 'pass03', 'customer', 3),
-('cus04', 'pass04', 'customer', 4),
+('cus01', 'pass01', 'customer'),
+('cus02', 'pass02', 'customer'),
+('cus03', 'pass03', 'customer'),
+('cus04', 'pass04', 'customer'),
 -- Tài khoản nhân viên
-('emp01', 'admin01', 'employee', 1),
-('emp02', 'admin02', 'employee', 2),
-('emp03', 'admin03', 'employee', 3);
+('emp01', 'admin01', 'employee'),
+('emp02', 'admin02', 'employee'),
+('emp03', 'admin03', 'employee');
 
 select * from account;
 select * from branch;
