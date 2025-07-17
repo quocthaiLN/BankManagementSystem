@@ -24,6 +24,30 @@ public class Main {
         }else { // login trả về false
             System.out.println("Your username or password is wrong");
         }
+        
         scan.close();
+
+
+        // Insert
+        UserAccount user1 = new UserAccount();
+        user1.setUsername("cus06");
+        user1.setPassword("pass06");
+        user1.setType("customer");
+
+        dao.insert(user1); // insert từ lớp UserAccountDao
+
+        // chèn trùng khóa chính
+        UserAccount user2 = new UserAccount();
+        user2.setUsername("cus06");
+        user2.setPassword("pass07");
+        user2.setType("customer");
+
+        dao.insert(user2);
+
+        // Delete
+        dao.delete(user1);
+        System.out.println("Xoa user1\n");
+
+        dao.delete(user1); // Xóa một user không tồn tại trong bảng
     }
 }

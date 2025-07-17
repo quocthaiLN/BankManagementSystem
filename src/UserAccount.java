@@ -5,18 +5,16 @@ public class UserAccount {
     private String username;
     private String password;
     private String userType; // (customer, employee)
-    private int referenceID;
 
     UserAccount() {
         this.username = "";
         this.password = "";
         this.userType = "customer";
     }
-    UserAccount(String username, String password, String userType, int referenceID) {
+    UserAccount(String username, String password, String userType) {
         this.username = username;
         this.password = password;
         this.userType = userType;
-        this.referenceID = referenceID;
     }
 
     // setter
@@ -39,9 +37,6 @@ public class UserAccount {
     }
     public String getUserType() {
         return this.userType;
-    }
-    public int getReferenceID() {
-        return this.referenceID;
     }
 
     // login: trả về true nếu username tồn tại vaf password đúng với username đó.
