@@ -1,3 +1,4 @@
+package main.java;
 // Khai báo lớp tài khoản: chỉ có getter và setter, constructor và hàm * login *.
 // Đây là lớp trong java (bình thường).
 

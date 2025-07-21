@@ -1,3 +1,4 @@
+package main.java;
 import java.sql.*;
 
 // Đây là lớp dùng để lấy UserAccount từ database -> Ko cần quan tâm logic bên trong.
