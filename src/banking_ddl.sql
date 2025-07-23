@@ -241,7 +241,7 @@ VALUES
 ('LN004', 4, N'vay thế chấp', 200000000, 'VND', 6.8, '2021-12-20', '2024-12-20', N'tất toán', 'CL004');
 
 -- -------- user_account --------------
-INSERT INTO user_account (username, password, user_type, reference_id)
+INSERT INTO user_account (username, password, user_type)
 VALUES
 -- Tài khoản khách hàng
 ('cus01', 'pass01', 'customer'),

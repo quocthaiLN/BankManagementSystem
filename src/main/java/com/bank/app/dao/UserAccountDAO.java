@@ -1,3 +1,5 @@
+package com.bank.app.dao;
+
 import java.sql.*;
 
 // Đây là lớp dùng để lấy UserAccount từ database -> Ko cần quan tâm logic bên trong.
@@ -57,9 +59,9 @@ public class UserAccountDAO extends DAO<UserAccount> {
             System.out.println(count + " rows affected");
 
         } catch (SQLException e) {
-            if(e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) { // Trùng khóa chính
+            if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) { // Trùng khóa chính
                 System.out.println("Duplicate key detected. Please change another username!!");
-            }else {
+            } else {
                 System.out.println("insert method error: " + e);
             }
 
@@ -85,15 +87,15 @@ public class UserAccountDAO extends DAO<UserAccount> {
             pst.setString(1, deletedUser.getUsername());
             int count = pst.executeUpdate();
 
-            if(count == 0) {
+            if (count == 0) {
                 System.out.println("username does not exist!!");
-            }else {
+            } else {
                 System.out.println(count + " rows affected");
             }
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("delete method error: " + e);
-        }finally {
+        } finally {
             this.close(conn, pst);
         }
     }

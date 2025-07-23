@@ -1,3 +1,5 @@
+package com.bank.app.security.hash;
+
 /*
  * Thuật toán hash sử dụng SHA-256 (họ SHA-2): từ chuỗi có độ dài bất kì --> chuỗi nhị phân 256-bit <=> chuỗi hex 64 kí tự.
  * Ngoài ra còn có MD5 và SHA-1 nhưng đã lỗi thời.

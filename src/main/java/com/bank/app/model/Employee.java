@@ -1,3 +1,5 @@
+package com.bank.app.model;
+
 import java.time.LocalDate;
 
 public class Employee {
@@ -16,6 +18,7 @@ public class Employee {
         this.status = "";
         this.createdAt = null;
     }
+
     Employee(String employeeID, String name, String branchID, String role, String status, LocalDate date) {
         this.employeeID = employeeID;
         this.fullName = name;

@@ -1,4 +1,6 @@
+package com.bank.app.model;
 // Khai báo lớp tài khoản: chỉ có getter và setter, constructor và hàm * login *.
+
 // Đây là lớp trong java (bình thường).
 
 public class UserAccount {
@@ -11,6 +13,7 @@ public class UserAccount {
         this.password = "";
         this.userType = "customer";
     }
+
     UserAccount(String username, String password, String userType) {
         this.username = username;
         this.password = password;
@@ -21,9 +24,11 @@ public class UserAccount {
     public void setUsername(String username) {
         this.username = username;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
+
     public void setType(String type) {
         this.userType = type;
     }
@@ -32,9 +37,11 @@ public class UserAccount {
     public String getUsername() {
         return this.username;
     }
+
     public String getPassword() {
         return this.password;
     }
+
     public String getUserType() {
         return this.userType;
     }
@@ -43,9 +50,11 @@ public class UserAccount {
     public boolean login(String username, String password) {
         UserAccountDAO user_dao = new UserAccountDAO();
         UserAccount tmp = user_dao.getUserAccount(username);
-        if(tmp == null) return false;
+        if (tmp == null)
+            return false;
 
-        if(!tmp.getPassword().equals(password)) return false;
+        if (!tmp.getPassword().equals(password))
+            return false;
 
         return true;
     }

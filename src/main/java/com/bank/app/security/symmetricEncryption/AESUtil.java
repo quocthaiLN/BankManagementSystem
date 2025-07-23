@@ -1,3 +1,5 @@
+package com.bank.app.security.symmetricEncryption;
+
 /*
  * Các thông tin nhạy cảm như STK, CCCD, SĐT,... cần được mã hóa
  * Sử dụng mã hóa đối xứng: AES-128

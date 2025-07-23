@@ -1,3 +1,5 @@
+package com.bank.app.security.symmetricEncryption;
+
 import javax.crypto.SecretKey;
 // package javax.cpyto: cup cấp class, interface cho mã hóa đối xứng
 // class SecretKey: interface đại diện cho 1 khóa bí mật, 
