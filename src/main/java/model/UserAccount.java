@@ -1,18 +1,21 @@
-package main.java;
+package main.java.model;
 // Khai báo lớp tài khoản: chỉ có getter và setter, constructor và hàm * login *.
 // Đây là lớp trong java (bình thường).
+
+import main.java.dao.UserAccountDAO;
 
 public class UserAccount {
     private String username;
     private String password;
     private String userType; // (customer, employee)
 
-    UserAccount() {
+    public UserAccount() {
         this.username = "";
         this.password = "";
         this.userType = "customer";
     }
-    UserAccount(String username, String password, String userType) {
+    
+    public UserAccount(String username, String password, String userType) {
         this.username = username;
         this.password = password;
         this.userType = userType;

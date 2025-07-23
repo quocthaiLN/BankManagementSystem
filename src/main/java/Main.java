@@ -1,6 +1,9 @@
 package main.java;
 import java.util.Scanner;
 
+import main.java.dao.UserAccountDAO;
+import main.java.model.UserAccount;
+
 public class Main {
     public static void main(String[] args) {
         // Gọi class UserAccountDAO để lấy UserAccount trong database (nó chỉ thực hieenj một nhiệm vụ đó)

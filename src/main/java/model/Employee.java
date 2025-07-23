@@ -1,7 +1,7 @@
-package main.java;
+package main.java.model;
 import java.time.LocalDate;
 
-public class Employee {
+public class Employee implements User {
     private String employeeID;
     private String fullName;
     private String branchID;
@@ -24,6 +24,36 @@ public class Employee {
         this.role = role;
         this.status = status;
         this.createdAt = date;
+    }
+
+    @Override
+    public String getUserType() {
+        return "Employee";
+    }
+
+    // getter
+    public String getID() {
+        return this.employeeID;
+    }
+
+    public String getName() {
+        return this.fullName;
+    }
+
+    public String getBranchID() {
+        return this.branchID;
+    }
+
+    public String getRole() {
+        return this.role;
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public LocalDate getCreatedDate() {
+        return this.createdAt;
     }
 
 }

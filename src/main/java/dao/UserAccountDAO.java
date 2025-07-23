@@ -1,5 +1,7 @@
-package main.java;
+package main.java.dao;
 import java.sql.*;
+
+import main.java.model.UserAccount;
 
 // Đây là lớp dùng để lấy UserAccount từ database -> Ko cần quan tâm logic bên trong.
 // Chỉ cần biết: gọi class UserAccountDAO và gọi hàm getUserAccount(string username)
@@ -61,7 +63,7 @@ public class UserAccountDAO extends DAO<UserAccount> {
             if(e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) { // Trùng khóa chính
                 System.out.println("Duplicate key detected. Please change another username!!");
             }else {
-                System.out.println("insert method error: " + e);
+                System.out.println("insert method user_account error: " + e);
             }
 
         } finally {

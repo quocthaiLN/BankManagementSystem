@@ -1,4 +1,4 @@
-package main.java;
+package main.java.dao;
 import java.net.ConnectException;
 import java.sql.*;
 
