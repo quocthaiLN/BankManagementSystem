@@ -1,4 +1,4 @@
-package main.java.dao;
+package dao;
 import java.net.ConnectException;
 import java.sql.*;
 
@@ -9,7 +9,6 @@ public abstract class DAO<T> {
     protected final String USERNAME = "root";
     protected final String PASSWORD = "23120355Hcmus*"; // password nên thay đổi theo mkhau theo mysql của máy mình.
     static final int DUPLICATE_KEY_ERROR_CODE = 1062; // mã lỗi khi trùng khóa chính
-
 
     static {
         try {
@@ -61,6 +60,5 @@ public abstract class DAO<T> {
 
     // Các thao tác với database
     public abstract void insert(T data);
-    public abstract void delete(T data);
     public abstract void update(T data);
 }

@@ -1,7 +1,7 @@
-package main.java.dao;
-import java.sql.*;
+package dao;
+import model.UserAccount;
 
-import main.java.model.UserAccount;
+import java.sql.*;
 
 // Đây là lớp dùng để lấy UserAccount từ database -> Ko cần quan tâm logic bên trong.
 // Chỉ cần biết: gọi class UserAccountDAO và gọi hàm getUserAccount(string username)
@@ -76,7 +76,6 @@ public class UserAccountDAO extends DAO<UserAccount> {
 
     }
 
-    @Override
     public void delete(UserAccount deletedUser) {
         Connection conn = null;
         PreparedStatement pst = null;

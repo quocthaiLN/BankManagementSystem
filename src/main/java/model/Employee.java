@@ -1,4 +1,4 @@
-package main.java.model;
+package model;
 import java.time.LocalDate;
 
 public class Employee implements User {
@@ -15,9 +15,9 @@ public class Employee implements User {
         this.branchID = "";
         this.role = "";
         this.status = "";
-        this.createdAt = null;
+        this.createdAt = LocalDate.now(); // lấy ngày hiện tại
     }
-    Employee(String employeeID, String name, String branchID, String role, String status, LocalDate date) {
+    public Employee(String employeeID, String name, String branchID, String role, String status, LocalDate date) {
         this.employeeID = employeeID;
         this.fullName = name;
         this.branchID = branchID;
@@ -35,25 +35,28 @@ public class Employee implements User {
     public String getID() {
         return this.employeeID;
     }
-
     public String getName() {
         return this.fullName;
     }
-
     public String getBranchID() {
         return this.branchID;
     }
-
     public String getRole() {
         return this.role;
     }
-
     public String getStatus() {
         return this.status;
     }
-
     public LocalDate getCreatedDate() {
         return this.createdAt;
+    }
+
+    public void display() {
+        System.out.printf("Employee Name: %s \n", this.fullName);
+        System.out.printf("Employee Branch ID: %s \n", this.branchID);
+        System.out.printf("Employee Role: %s \n", this.role);
+        System.out.printf("Employee Status: %s \n", this.status);
+        System.out.printf("Employee Created Day: %s \n", this.createdAt.toString());
     }
 
 }

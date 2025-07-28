@@ -1,4 +1,4 @@
-package main.java.model;
+package model;
 import java.time.LocalDate;
 
 public class Customer implements User {
@@ -11,10 +11,10 @@ public class Customer implements User {
     private String address;
     private String email;
     private String type; //  cá nhân,  doanh nghiệp
-    private String status; // mở || khóa || đóng => open || lock || close
+    private String status; // mở || khóa || đóng
     private LocalDate registerDate;
 
-    Customer() {
+    public Customer() {
         this.name = "";
         this.birthDate = null;
         this.gender = "";
@@ -23,11 +23,12 @@ public class Customer implements User {
         this.address = "";
         this.email = "";
         this.type = "cá nhân";
-        this.status = "open";
-        this.registerDate = null;
+        this.status = "mở";
+        this.registerDate = LocalDate.now();
     }
 
-    Customer(String name, LocalDate birthDate, String gender, String identityNumber, String phone, String address, String email, String type, String status, LocalDate registerDate) {
+    public Customer(int customerID, String name, LocalDate birthDate, String gender, String identityNumber, String phone, String address, String email, String type, String status, LocalDate registerDate) {
+        this.customerID = customerID;
         this.name = name;
         this.birthDate = birthDate;
         this.gender = gender;
@@ -40,49 +41,71 @@ public class Customer implements User {
         this.registerDate = registerDate;
     }
 
+    public Customer(String name, LocalDate birthDate, String gender, String identityNumber, String phone, String address, String email, String type, String status, LocalDate registerDate) {
+        this.name = name;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.identityNumber = identityNumber;
+        this.phone = phone;
+        this.address = address;
+        this.email = email;
+        this.type = type;
+        this.status = status;
+        this.registerDate = registerDate;
+    }
+
+
     @Override
     public String getUserType() {
         return "Customer";
     }
 
     // getter
+    public int getCustomerID() {return this.customerID;}
     public String getName() {
         return this.name;
     }
-
     public LocalDate getBirthDate() {
         return this.birthDate;
     }
-
     public String getGender() {
         return this.gender;
     }
-
     public String getIndentityNumber() {
         return this.identityNumber;
     }
-
     public String getPhone() {
         return this.phone;
     }
-
     public String getAddress() {
         return this.address;
     }
-
     public String getEmail() {
         return this.email;
     }
-
     public String getType() {
         return this.type;
     }
-
     public String getStatus() {
         return this.status;
     }
-
     public LocalDate getRegisterDate() {
         return this.registerDate;
+    }
+
+    // display
+    public void display() {
+        System.out.printf("Customer ID: %d \n", this.customerID);
+        System.out.printf("Customer Name: %s \n", this.name);
+        System.out.printf("Customer DOB: %s \n", this.birthDate.toString());
+        System.out.printf("Customer Gender: %s \n", this.gender);
+        System.out.printf("Customer Identity Num: %s \n", this.identityNumber);
+        System.out.printf("Customer phone: %s \n", this.phone);
+        System.out.printf("Customer address: %s \n", this.address);
+        System.out.printf("Customer email: %s \n", this.email);
+        System.out.printf("Customer type: %s \n", this.type);
+        System.out.printf("Customer ID: %s \n", this.status);
+        System.out.printf("Customer ID: %s \n", this.registerDate.toString());
+
     }
 }
