@@ -20,7 +20,7 @@ public class JKSKeyManager {
     public static SecretKey loadAESKey() throws Exception {
         KeyStore keyStore = KeyStore.getInstance("JCEKS"); // tạo đối tượng kiểu JCEKS
 
-        // tại đối tượng kiểu FileInputStream để đọc mật khẩu
+        // tạo đối tượng kiểu FileInputStream để đọc mật khẩu
         try (FileInputStream fis = new FileInputStream(KEYSTORE_PATH/* đường dẫn đến .jks */)) {
             keyStore.load(fis, STORE_PASSWORD.toCharArray()); // load(): nạp key vào bộ nhớ
                                                               // toCharArray(): do load() chỉ nhận char[]
@@ -44,4 +44,4 @@ public class JKSKeyManager {
 }
 
 // ! làm sao để lưu và sử dụng store pass và key pass một cách an toàn ==> mình
-// ! chọn cách sử dụng biến môi trường
+// ! chọn cách sử dụng properties.config hoặc environmet varrables

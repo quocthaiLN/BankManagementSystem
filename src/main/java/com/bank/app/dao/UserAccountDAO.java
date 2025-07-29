@@ -1,7 +1,7 @@
 package com.bank.app.dao;
 
 import java.sql.*;
-
+import com.bank.app.model.*;
 // Đây là lớp dùng để lấy UserAccount từ database -> Ko cần quan tâm logic bên trong.
 // Chỉ cần biết: gọi class UserAccountDAO và gọi hàm getUserAccount(string username)
 // Hàm này tìm kiếm các tài khoản trong database bằng username.

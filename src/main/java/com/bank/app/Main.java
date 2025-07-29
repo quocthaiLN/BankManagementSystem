@@ -1,8 +1,12 @@
 package com.bank.app;
 
+import com.bank.app.security.hash.*;
+import com.bank.app.security.symmetricEncryption.*;
+import com.bank.app.model.*;
+import com.bank.app.dao.*;
 import java.util.Scanner;
 
-public class Main {
+public class main {
     public static void main(String[] args) {
 
         // *Test mã hóa
@@ -10,7 +14,12 @@ public class Main {
         String password = "12345678";
         String userType = "ThanDongFiFai";
 
-        // String encryptedUsername =
+        String encryptedPassword = PasswordHasher.hashing(password);
+        UserAccount test = new UserAccount(username, encryptedPassword, userType);
+        UserAccountDAO dao = new UserAccountDAO();
+        dao.insert(test);
+
+
 
         // *Test kiểm tra tồn tại/chèn/xóa
         // // Gọi class UserAccountDAO để lấy UserAccount trong database (nó chỉ thực

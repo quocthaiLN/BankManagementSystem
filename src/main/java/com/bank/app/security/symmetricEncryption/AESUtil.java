@@ -45,20 +45,21 @@ package com.bank.app.security.symmetricEncryption;
  * ==> làm cách nào để biết IV để decrypt? ==> lưu IV thành 16 bytes đầu của kết quả
  */
 
+import javax.crypto.Cipher;
 //Cipher là lớp trung tâm trong JCA để thực hiện các thao tác mã hóa và giải mã(Encryption/Decryption).
 //Hỗ trợ nhiều thuật toán như AES,DES,RSA...thông qua tên thuật toán(transformation string),ví dụ:"AES/CBC/PKCS5Padding".
-import javax.crypto.Cipher;
 
 import javax.crypto.SecretKey;
 
-// Đại diện cho Initialization Vector cần dùng khi sử dụng AES ở chế độ CBC
 import javax.crypto.spec.IvParameterSpec;
+// Đại diện cho Initialization Vector cần dùng khi sử dụng AES ở chế độ CBC
 
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
-//Base64 dùng để mã hóa hoặc giải mã dữ liệu nhị phân (byte[]) thành chuỗi Base64 và ngược lại.
+
 import java.util.Base64;
 
+//Base64 dùng để mã hóa hoặc giải mã dữ liệu nhị phân (byte[]) thành chuỗi Base64 và ngược lại.
 public class AESUtil {
     private static final String AES_ALGORITHM = "AES/CBC/PKCS5Padding"; // xác định chế độ mã hóa
     private static final int IV_LENGTH = 16;
@@ -67,35 +68,37 @@ public class AESUtil {
     // PKCS5Padding: thêm padding nếu plain text không đủ chia hết cho 16 byte
 
     public static String encrypt(String plainText, SecretKey key) throws Exception {
-        // tạo đối tượng mã hóa AES-CBC
-        Cipher cipher = Cipher.getInstance(AES_ALGORITHM);
 
+        Cipher cipher = Cipher.getInstance(AES_ALGORITHM);
+        // tạo đối tượng mã hóa AES-CBC
+
+        SecureRandom random = new SecureRandom();
         // tạo IV ngẫu nhiên và đảm bảo tính bảo mật
         // ! cần trả về IV để có thể giải mã
-        SecureRandom random = new SecureRandom();
+
         byte[] ivBytes = new byte[IV_LENGTH];
         random.nextBytes(ivBytes);
         IvParameterSpec iv = new IvParameterSpec(ivBytes);
 
-        // chuẩn bị vào mã hóa truyền key và iv vào
         cipher.init(Cipher.ENCRYPT_MODE/* mã hóa đầu vào */, key, iv);
+        // chuẩn bị vào mã hóa truyền key và iv vào
 
+        byte[] encrypted = cipher.doFinal(plainText.getBytes("UTF-8"));
         // Chuyển String thành mảng bytes xử lý toàn bộ mảng byte đầu vào
         // Áp dụng thuật toán được chỉ định ở dòng khai báo cipher
         // Trả về mảng byte kết quả là được mã hóa hay giải mã chỉ định ở dòng init()
-        byte[] encrypted = cipher.doFinal(plainText.getBytes("UTF-8"));
 
-        // thêm IV vào đầu mảng bytes
         ByteBuffer buffer = ByteBuffer.allocate(ivBytes.length + encrypted.length);
         buffer.put(ivBytes);
         buffer.put(encrypted);
+        // thêm IV vào đầu mảng bytes
 
+        return Base64.getEncoder().encodeToString(buffer.array());
         // Chuyển về kiểu Base64: 1 kiểu quy ước 4 bit sẽ thành 1 kí tự nào đó, chủ yếu
         // để dễ đọc
-        return Base64.getEncoder().encodeToString(buffer.array()/*
-                                                                 * do buffer đang kiểu ByteBuffer nên cần chuyển về
-                                                                 * bytes[]
-                                                                 */);
+        // Do buffer đang kiểu ByteBuffer nên cần chuyển về
+        // bytes[]
+
     }
 
     public static String decrypt(String encryptedString, SecretKey key) throws Exception {

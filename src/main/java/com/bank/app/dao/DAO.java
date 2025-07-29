@@ -1,6 +1,6 @@
 package com.bank.app.dao;
 
-import java.net.ConnectException;
+//import java.net.ConnectException;
 import java.sql.*;
 
 // Lớp cha cho các lopws DAO dùng để kết nối với database -> ko caanf quan tâm class này.

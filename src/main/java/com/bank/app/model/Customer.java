@@ -3,7 +3,7 @@ package com.bank.app.model;
 import java.time.LocalDate;
 
 public class Customer {
-    private String customerId;
+    private String customerID;
     private String name;
     private LocalDate birthday;
     private String gender;
@@ -15,8 +15,8 @@ public class Customer {
     private String status;
     private LocalDate registerDate;
 
-    Customer() {
-        customerId = "";
+    public Customer() {
+        this.customerID = "";
         name = "";
         birthday = null;
         gender = "";
@@ -29,10 +29,10 @@ public class Customer {
         registerDate = null;
     }
 
-    public Customer(String customerId, String name, LocalDate birthday, String gender,
+    public Customer(String customerID, String name, LocalDate birthday, String gender,
             String identityNumber, String number, String address,
             String email, String type, String status, LocalDate registerDate) {
-        this.customerId = customerId;
+        this.customerID = customerID;
         this.name = name;
         this.birthday = birthday;
         this.gender = gender;

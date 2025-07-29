@@ -42,19 +42,20 @@ public class PasswordHasher {
 
             String salt = generateSalt();
             String saltedInput = input + salt;
+
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
             // Gọi 1 instance của SHA-256 trong class MessageDigest, nếu không tồn tại
             // SHA-256 sẽ throw lỗi
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
 
+            byte encodeHash[] = digest.digest(saltedInput.getBytes(StandardCharsets.UTF_8));
             // getBytes(): chuyển String sang mảng byte
             // StandardCharsets.UTF_8: để chương trình chuyển đúng form không phụ thuộc vào
             // thiết bị
             // digest(byte[]): thực hiện SHA-256
-            byte encodeHash[] = digest.digest(saltedInput.getBytes(StandardCharsets.UTF_8));
 
+            return bytesToHex(encodeHash);
             // hash xong thì encodeHash thuộc dạng binary ta chuyển thành string hex để lưu
             // cho dễ
-            return bytesToHex(encodeHash);
 
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Invalid cyptal algorithm!", e);
@@ -75,11 +76,6 @@ public class PasswordHasher {
         }
 
         return hexString.toString();
-    }
-
-    public static void main(String[] args) {
-        String input = "abc";
-        System.out.println(hashing(input));
     }
 
 }
