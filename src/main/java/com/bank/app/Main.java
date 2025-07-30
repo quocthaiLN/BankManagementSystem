@@ -1,74 +1,34 @@
 package com.bank.app;
 
-import com.bank.app.security.hash.*;
-import com.bank.app.security.symmetricEncryption.*;
-import com.bank.app.model.*;
-import com.bank.app.dao.*;
+import java.time.LocalDate;
 import java.util.Scanner;
 
-public class main {
+import com.bank.app.model.Customer;
+//import com.bank.app.model.*;
+import com.bank.app.service.*;
+//import com.bank.app.dao.*;
+//import com.bank.app.security.hash.*;
+//import com.bank.app.security.keyStore.*;
+//import com.bank.app.security.symmetricEncryption.*;
+import com.bank.app.service.CustomerService.CustomerService;
+import com.bank.app.service.CustomerService.CustomerServiceImpl;
+
+public class Main {
     public static void main(String[] args) {
-
-        // *Test mã hóa
-        String username = "QuocThai";
-        String password = "12345678";
-        String userType = "ThanDongFiFai";
-
-        String encryptedPassword = PasswordHasher.hashing(password);
-        UserAccount test = new UserAccount(username, encryptedPassword, userType);
-        UserAccountDAO dao = new UserAccountDAO();
-        dao.insert(test);
-
-
-
-        // *Test kiểm tra tồn tại/chèn/xóa
-        // // Gọi class UserAccountDAO để lấy UserAccount trong database (nó chỉ thực
-        // // hieenj một nhiệm vụ đó)
-        // UserAccountDAO dao = new UserAccountDAO();
-        // Scanner scan = new Scanner(System.in);
-
-        // System.out.print("Username: ");
-        // String username = scan.next();
-        // System.out.print("Password: ");
-        // String password = scan.next();
-
-        // // lấy UserAccount
-        // UserAccount user = dao.getUserAccount(username);
-        // // kiểm tra nếu user = null, tức là username nhập vào ko tồn tại trong
-        // database.
-        // if (user == null) {
-        // System.out.println("Your username is wrong");
-        // return;
-        // }
-
-        // if (user.login(username, password)) {
-        // System.out.println("Login successfully");
-        // } else { // login trả về false
-        // System.out.println("Your username or password is wrong");
-        // }
-
-        // scan.close();
-
-        // // Insert
-        // UserAccount user1 = new UserAccount();
-        // user1.setUsername("cus06");
-        // user1.setPassword("pass06");
-        // user1.setType("customer");
-
-        // dao.insert(user1); // insert từ lớp UserAccountDao
-
-        // // chèn trùng khóa chính
-        // UserAccount user2 = new UserAccount();
-        // user2.setUsername("cus06");
-        // user2.setPassword("pass07");
-        // user2.setType("customer");
-
-        // dao.insert(user2);
-
-        // // Delete
-        // dao.delete(user1);
-        // System.out.println("Xoa user1\n");
-
-        // dao.delete(user1); // Xóa một user không tồn tại trong bảng
+        Customer customer = new Customer(
+                1, // customerID
+                "Lê Nguyễn Quốc Thái", // name
+                LocalDate.of(2003, 10, 15), // birthDate
+                "Nam", // gender
+                "123456789012", // identityNumber
+                "0909123456", // phone
+                "123 Lý Thường Kiệt, Q.10, TPHCM", // address
+                "thai.nguyen@example.com", // email
+                "Cá nhân", // type
+                "Mở", // status
+                LocalDate.now() // registerDate
+        );
+        CustomerService service = new CustomerService();
+        service.addCustomer(customer);
     }
 }

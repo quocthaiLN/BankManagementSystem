@@ -1,7 +1,9 @@
 package com.bank.app.dao;
 
+import com.bank.app.model.UserAccount;
+
 import java.sql.*;
-import com.bank.app.model.*;
+
 // Đây là lớp dùng để lấy UserAccount từ database -> Ko cần quan tâm logic bên trong.
 // Chỉ cần biết: gọi class UserAccountDAO và gọi hàm getUserAccount(string username)
 // Hàm này tìm kiếm các tài khoản trong database bằng username.
@@ -62,7 +64,7 @@ public class UserAccountDAO extends DAO<UserAccount> {
             if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) { // Trùng khóa chính
                 System.out.println("Duplicate key detected. Please change another username!!");
             } else {
-                System.out.println("insert method error: " + e);
+                System.out.println("insert method user_account error: " + e);
             }
 
         } finally {
@@ -75,7 +77,6 @@ public class UserAccountDAO extends DAO<UserAccount> {
 
     }
 
-    @Override
     public void delete(UserAccount deletedUser) {
         Connection conn = null;
         PreparedStatement pst = null;

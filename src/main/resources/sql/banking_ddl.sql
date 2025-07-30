@@ -1,15 +1,15 @@
 CREATE DATABASE bankingdb;
 USE bankingdb;
-
+-- DROP DATABASE bankingdb
 CREATE TABLE Customer (
 	customer_id int NOT NULL auto_increment, -- primary key
-    name nvarchar(100) NOT NULL UNIQUE,
+    name nvarchar(100) NOT NULL ,
     birth_date date,
     gender nvarchar(20), -- check constraint
     identity_number varchar(50) UNIQUE NOT NULL,
-    phone varchar(50),
+    phone varchar(50) UNIQUE,
     address nvarchar(200),
-    email varchar(100),
+    email varchar(100) UNIQUE,
     type nvarchar(100), -- check constraint
     status nvarchar(100), -- check constraint
     register_date date,
@@ -26,7 +26,7 @@ CREATE TABLE Account (
 	branch_id VARCHAR(20), -- branch: chi nhánh
 	account_type NVARCHAR(50),
 	currency VARCHAR(10),
-	balance DECIMAL(18,2), -- balance: số dư
+	balance DECIMAL(18,2) default 0, -- balance: số dư
 	status NVARCHAR(50),
 	open_date DATE,
 	close_date DATE,
@@ -37,7 +37,7 @@ CREATE TABLE Account (
 
 CREATE TABLE Transaction (
 	transaction_id VARCHAR(20) NOT NULL, -- primary key
-	from_account INT,
+	from_account INT NOT NULL,
 	to_account INT,
 	transaction_type NVARCHAR(50),
 	amount DECIMAL(18,2),
@@ -53,7 +53,7 @@ CREATE TABLE Loan (
 	loan_id VARCHAR(20) NOT NULL, -- primary key
 	customer_id INT,
 	loan_type NVARCHAR(100),
-	amount DECIMAL(18,2),
+	amount DECIMAL(18,2) CHECK(AMOUNT >= 0),
 	currency VARCHAR(10),
 	interest_rate DECIMAL(5,2),
 	start_date DATE,
@@ -78,7 +78,7 @@ CREATE TABLE Collateral (
 
 CREATE TABLE Employee (
 	employee_id VARCHAR(20) NOT NULL, -- primary key
-	full_name NVARCHAR(100) UNIQUE,
+	full_name NVARCHAR(100),
 	branch_id VARCHAR(20),
 	role NVARCHAR(100),
 	status NVARCHAR(50),
@@ -89,7 +89,7 @@ CREATE TABLE Employee (
 
 CREATE TABLE Branch (
 	branch_id VARCHAR(20) NOT NULL, -- primary key
-	branch_name NVARCHAR(100),
+	branch_name NVARCHAR(100) UNIQUE,
 	address NVARCHAR(200),
 	status NVARCHAR(50),
 	CONSTRAINT PK_Branch PRIMARY KEY(branch_id),
@@ -225,11 +225,11 @@ INSERT INTO Transaction (transaction_id, from_account, to_account, transaction_t
 VALUES 
 ('T001', 1, 2, N'chuyển tiền', 500000.00, 'VND', '2024-10-10', N'thành công'),
 ('T002', 2, NULL, N'rút tiền', 1000000.00, 'VND', '2024-11-15', N'thành công'),
-('T003', NULL, 3, N'nạp tiền', 200000.00, 'USD', '2024-12-01', N'thành công'),
+('T003', 3, NULL, N'nạp tiền', 200000.00, 'USD', '2024-12-01', N'thành công'),
 ('T004', 3, 4, N'chuyển tiền', 150000.00, 'VND', '2025-01-05', N'thất bại'),
 ('T005', 4, 1, N'chuyển tiền', 300000.00, 'VND', '2025-02-20', N'chờ xử lý'),
 ('T006', 2, 3, N'chuyển tiền', 500.00, 'USD', '2025-03-01', N'thành công'),
-('T007', NULL, 1, N'nạp tiền', 1000000.00, 'VND', '2025-03-10', N'thành công'),
+('T007', 1, NULL, N'nạp tiền', 1000000.00, 'VND', '2025-03-10', N'thành công'),
 ('T008', 1, NULL, N'rút tiền', 250000.00, 'VND', '2025-03-15', N'thành công');
 
 -- -------- loan ------------
@@ -253,12 +253,330 @@ VALUES
 ('emp02', 'admin02', 'employee'),
 ('emp03', 'admin03', 'employee');
 
-select * from account;
-select * from branch;
-select * from collateral;
-select * from currency;
-select * from customer;
-select * from employee;
-select * from loan;
-select * from transaction;
-select * from user_account;
+-- ------------------ RBTV ------------------------
+
+-- NẾU CẦN THÌ CÓ THỂ SỬ DỤNG PROCEDURE + TRANSACTION ĐỂ THỰC HIỆN TĂNG TIỀN TÀI KHOẢN TRONG TRANSACTION
+
+-- CCCD là duy nhất trong customer bổ sung cho unique cho thông báo rõ ràng hơn
+-- Drop trigger CHECK_IDENTITY_NUMBER
+DELIMITER $$ 
+CREATE TRIGGER CHECK_IDENTITY_NUMBER
+BEFORE INSERT
+ON Customer
+FOR EACH ROW
+BEGIN
+    DECLARE COUNTS INT;
+    SELECT COUNT(*) INTO COUNTS
+    FROM Customer
+    WHERE identity_number = NEW.identity_number;
+
+    IF COUNTS > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'The identity number must be unique';
+    END IF;
+END $$
+DELIMITER ;
+
+-- Tuổi của khách hàng tính đến ngày đăng ký phải ít nhất là đủ 16 tuổi
+-- DROP TRIGGER CHECK_AGE_CONDITION
+DELIMITER $$
+CREATE TRIGGER CHECK_AGE_CONDITION
+BEFORE INSERT ON Customer
+FOR EACH ROW
+BEGIN
+	IF YEAR(NEW.REGISTER_DATE) - YEAR(NEW.BIRTH_DATE) < 16 THEN
+		SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Customer is under 16 years old' ;
+    ELSE
+		IF YEAR(NEW.REGISTER_DATE) - YEAR(NEW.BIRTH_DATE) = 16 AND MONTH(NEW.REGISTER_DATE) < MONTH(NEW.BIRTH_DATE) THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'Customer is under 16 years old' ;
+		ELSE
+			IF YEAR(NEW.REGISTER_DATE) - YEAR(NEW.BIRTH_DATE) = 16 AND MONTH(NEW.REGISTER_DATE) = MONTH(NEW.BIRTH_DATE) AND DAY(NEW.REGISTER_DATE) < DAY(NEW.BIRTH_DATE) THEN
+				SIGNAL SQLSTATE '45000'
+				SET MESSAGE_TEXT = 'Customer is under 16 years old' ;
+			END IF;
+		END IF;
+    END IF;
+END $$
+DELIMITER ;
+
+-- close_date quá ngày hiện tại thì status phải là đóng
+-- Gọi thường xuyên để check có thể dùng event nhưng mà hiện giờ thì tui nghĩ tutu thử
+-- SQL event: https://viblo.asia/p/mysql-scheduled-event-dWrvwWE2vw38
+-- SET GLOBAL event_scheduler = ON;
+-- CREATE EVENT IF NOT EXISTS AUTO_UPDATE_STATUS_ACC
+-- ON SCHEDULE schedule
+-- DO
+-- 		CALL UPDATE_STATUS_ACCOUNT();
+-- DROP PROCEDURE UPDATE_STATUS_ACCOUNT
+DELIMITER $$
+CREATE PROCEDURE UPDATE_STATUS_ACCOUNT()
+BEGIN
+    UPDATE Account
+    SET status = 'đóng'
+    WHERE close_date IS NOT NULL
+      AND CURDATE() > close_date
+      AND status !='đóng';
+END $$
+DELIMITER ;
+
+-- from_account và to_account phải khác nhau khi giao dịch là chuyển tiền
+-- DROP TRIGGER CHECK_TRANFER_TO_OWN_ACCOUNT
+DELIMITER $$
+CREATE TRIGGER CHECK_TRANFER_TO_OWN_ACCOUNT
+BEFORE INSERT ON TRANSACTION
+FOR EACH ROW
+BEGIN
+	IF NEW.FROM_ACCOUNT = NEW.TO_ACCOUNT AND NEW.TRANSACTION_TYPE = 'chuyển tiền' THEN
+		SIGNAL SQLSTATE '45000'
+        SET message_text = 'CANNOT_TRANFER_MONEY_TO_YOUR_ACCOUNT' ;
+	END IF ;
+END $$
+DELIMITER ;
+
+-- email và phone là duy nhất
+-- DROP TRIGGER CHECK_EMAIL_AND_PHONE_IS_UNIQUE
+DELIMITER $$
+CREATE TRIGGER CHECK_EMAIL_AND_PHONE_IS_UNIQUE
+BEFORE INSERT ON Customer
+FOR EACH ROW
+BEGIN
+	DECLARE COUNT_EMAIL INT;
+    DECLARE COUNT_PHONE INT;
+    
+    SELECT COUNT(*) INTO COUNT_EMAIL
+    FROM Customer
+    WHERE EMAIL = NEW.EMAIL;
+	
+    SELECT COUNT(*) INTO COUNT_PHONE
+    FROM Customer
+    WHERE PHONE = NEW.PHONE;
+    
+    IF COUNT_EMAIL > 0 AND COUNT_PHONE > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Email and phone must be unique';
+	ELSE
+		IF COUNT_EMAIL > 0 THEN 
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'Email must be unique';
+		ELSE 
+			IF COUNT_PHONE > 0 THEN 
+				SIGNAL SQLSTATE '45000'
+				SET MESSAGE_TEXT = 'Phone number must be unique';
+            END IF;
+		END IF;
+    END IF;
+END $$
+DELIMITER ;
+
+-- không được chuyển tiền tới tài khoản(to_account) có status khác mở
+-- DROP TRIGGER CHECK_TRANFER_MONEY_TO_CLOSE_ACCOUNT
+DELIMITER $$
+CREATE TRIGGER CHECK_TRANFER_MONEY_TO_CLOSE_ACCOUNT
+BEFORE INSERT ON TRANSACTION
+FOR EACH ROW
+BEGIN
+	DECLARE S NVARCHAR(50);
+    SELECT STATUS INTO S
+    FROM ACCOUNT A
+    WHERE A.ACCOUNT_ID = NEW.TO_ACCOUNT;
+    
+    IF S != 'mở' THEN 
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'CANNOT TRANFER MONEY TO A CLOSE ACCOUNT';
+	END IF;
+END $$
+DELIMITER ;
+
+-- Tài khoản from_account phải có trạng thái là mở
+-- DROP TRIGGER CHECK_TRANFER_MONEY_FROM_CLOSE_ACCOUNT
+DELIMITER $$
+CREATE TRIGGER CHECK_TRANFER_MONEY_FROM_CLOSE_ACCOUNT
+BEFORE INSERT ON TRANSACTION
+FOR EACH ROW
+BEGIN
+	DECLARE S NVARCHAR(50);
+    SELECT STATUS INTO S
+    FROM ACCOUNT A
+    WHERE A.ACCOUNT_ID = NEW.FROM_ACCOUNT;
+    
+    IF S != 'mở' THEN 
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'CANNOT TRANFER MONEY TO A CLOSE ACCOUNT';
+	END IF;
+END $$
+DELIMITER ;
+
+-- số dư của from account phải lớn hơn hoặc bằng amount
+-- DROP TRIGGER CHECK_IS_ENOUGH_BALANCE
+DELIMITER $$
+CREATE TRIGGER CHECK_IS_ENOUGH_BALANCE
+BEFORE INSERT ON TRANSACTION
+FOR EACH ROW
+BEGIN
+	DECLARE MONEY DECIMAL(18, 2);
+    SELECT BALANCE INTO MONEY
+    FROM ACCOUNT A
+    WHERE A.ACCOUNT_ID = NEW.FROM_ACCOUNT;
+    
+    IF MONEY < NEW.AMOUNT THEN 
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'YOUR ACCOUNT IS NOT ENOUGH BALANCE';
+	END IF;
+END $$
+DELIMITER ;
+
+-- Khi customer bị khóa hoặc đóng thì k đc cho vay
+-- DROP TRIGGER CHECK_LOAN_FOR_CLOSE_ACCOUNT
+DELIMITER $$
+CREATE TRIGGER CHECK_LOAN_FOR_CLOSE_ACCOUNT
+BEFORE INSERT ON LOAN
+FOR EACH ROW
+BEGIN
+	DECLARE S NVARCHAR(50);
+    SELECT STATUS INTO S
+    FROM Customer C
+    WHERE C.CUSTOMER_ID = NEW.CUSTOMER_ID;
+    IF S != 'mở' THEN 
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'CANNOT LOAN FOR A CLOSE ACCOUNT';
+	END IF;
+END $$
+DELIMITER ;
+
+-- ngày đăng ký khách hàng phải trước ngày vay
+-- DROP TRIGGER CHECK_DATE_LOAN
+DELIMITER $$
+CREATE TRIGGER CHECK_DATE_LOAN
+BEFORE INSERT ON LOAN
+FOR EACH ROW
+BEGIN
+	DECLARE D DATE;
+    SELECT REGISTER_DATE INTO D
+    FROM Customer C
+    WHERE C.CUSTOMER_ID = NEW.CUSTOMER_ID;
+    IF D > NEW.START_DATE THEN 
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'LOAN_DATE IS BEFORE REGISTER_DATE';
+	END IF;
+END $$
+DELIMITER ;
+
+-- chỉ cho phép 1 collateral của 1 owner_id với 1 loan duy nhất tới khi customer đã tất toán khoản vay
+-- DROP TRIGGER CHECK_CAN_USE_COLLATERAL
+DELIMITER $$
+CREATE TRIGGER CHECK_CAN_USE_COLLATERAL
+BEFORE INSERT ON LOAN
+FOR EACH ROW
+BEGIN
+	DECLARE ID NVARCHAR(20);
+    SET ID = '';
+    SELECT COLLATERAL_ID INTO ID
+    FROM LOAN L
+    WHERE L.COLLATERAL_ID = NEW. COLLATERAL_ID AND L.STATUS != 'tất toán' LIMIT 1;
+    IF ID != '' THEN
+		SIGNAL SQLSTATE '45000'
+        SET message_text = 'THIS COLLATERAL CANNOT USE FOR A LOAN';
+    END IF;
+END $$
+DELIMITER ;
+
+-- CHUYỂN TIỀN SANG USD
+-- DROP PROCEDURE CONVERT_TO_USD
+-- DELIMITER $$
+-- CREATE PROCEDURE CONVERT_TO_USD (
+--     IN AMOUNT DECIMAL(18, 2),       
+--     IN SP_CURRENCY_CODE VARCHAR(10),   
+--     OUT USD_AMOUNT DECIMAL(18, 2)   
+-- )
+-- BEGIN
+--     DECLARE RATE DECIMAL(10, 4);
+
+--     SELECT RATE_TO_USD INTO RATE
+--     FROM CURRENCY
+--     WHERE CURRENCY_CODE = SP_CURRENCY_CODE;
+--     
+--     IF RATE IS NULL THEN
+--         SIGNAL SQLSTATE '45000'
+--         SET MESSAGE_TEXT = 'Currency code is not found';
+--     END IF;
+
+--     SET USD_AMOUNT = AMOUNT * RATE;
+-- END $$
+-- DELIMITER ;
+
+DELIMITER $$
+CREATE FUNCTION CONVERT_TO_USD (
+    AMOUNT DECIMAL(18, 2),
+    SP_CURRENCY_CODE VARCHAR(10)
+)
+RETURNS DECIMAL(18, 4)
+DETERMINISTIC
+READS SQL DATA
+BEGIN
+    DECLARE RATE DECIMAL(10, 4);
+    DECLARE USD_AMOUNT DECIMAL(18, 4);
+
+    SELECT RATE_TO_USD INTO RATE
+    FROM CURRENCY
+    WHERE CURRENCY_CODE = SP_CURRENCY_CODE;
+
+    SET USD_AMOUNT = AMOUNT * RATE;
+    RETURN USD_AMOUNT;
+END $$
+DELIMITER ;
+
+-- hạn mức tiền 1 ngày
+-- DROP TRIGGER CREDIT_LIMIT_PER_DAY
+-- DROP PROCEDURE CAL_CREDIT_LIMIT_PER_DAY
+-- TÍNH TOÁN HẠN MỨC THẺ TỐI ĐA 1 NGÀY
+DELIMITER $$ 
+CREATE PROCEDURE CALC_CREDIT_LIMIT_PER_DAY(IN ACC_ID INT, OUT CREDIT_LIMIT DECIMAL(18,2))
+BEGIN
+	DECLARE AMOUNT DECIMAL(18, 2);
+    DECLARE CUR_CODE VARCHAR(10);
+	DECLARE USD DECIMAL(18, 2);
+    DECLARE RES DECIMAL(18, 2);
+    SELECT BALANCE INTO AMOUNT
+    FROM ACCOUNT
+    WHERE ACCOUNT_ID = ACC_ID;
+    SELECT CURRENCY INTO CUR_CODE
+    FROM ACCOUNT
+    WHERE ACCOUNT_ID = ACC_ID;
+    SET USD = CONVERT_TO_USD(AMOUNT, CUR_CODE);
+    IF USD <= 5000 THEN
+		SET CREDIT_LIMIT = 5000;
+	ELSE
+		SET CREDIT_LIMIT = 5000 + 0.25*USD;
+    END IF;
+END $$
+DELIMITER ;
+-- TÍNH SỐ TIỀN ĐÃ CHUYỂN HIỆN TẠI
+-- DROP PROCEDURE AMOUNT_TRANFER
+DELIMITER $$
+CREATE PROCEDURE AMOUNT_TRANFER(IN ACC_ID INT, OUT CREDIT_LIMIT DECIMAL(18,2))
+BEGIN 
+    SELECT SUM(T.AMOUNT * C.RATE_TO_USD) INTO CREDIT_LIMIT
+    FROM TRANSACTION T
+    JOIN CURRENCY C ON T.CURRENCY = C.CURRENCY_CODE
+    WHERE T.FROM_ACCOUNT = ACC_ID and T.DATE = CURDATE();
+END $$
+DELIMITER ;
+-- CALL AMOUNT_TRANFER(1, @res);
+-- select @res
+-- SELECT * FROM transaction
+-- TRIGGER
+DELIMITER $$
+CREATE TRIGGER CREDIT_LIMIT_PER_DAY
+BEFORE INSERT ON TRANSACTION
+FOR EACH ROW
+BEGIN
+	CALL CALC_CREDIT_LIMIT_PER_DAY(NEW.FROM_ACCOUNT, @RES1);
+    CALL AMOUNT_TRANFER(NEW.FROM_ACCOUNT, @RES2);
+    IF @RES2 + NEW.AMOUNT > @RES1 THEN
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'You’ve reached your credit limit today';
+    END IF;
+END $$
+DELIMITER ;

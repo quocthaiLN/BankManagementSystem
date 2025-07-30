@@ -31,5 +31,26 @@ bin/
 *.class
 
 
+
 ### Mac OS ###
 .DS_Store
+
+
+### ENVIRONMENT_VARIABLE ###
+# Bỏ qua file build
+/build/
+
+# Bỏ qua tất cả file log
+*.log
+
+# Bỏ qua các file cấu hình IDE
+*.iml
+.idea/
+.vscode/
+
+# Bỏ qua file hệ điều hành
+.DS_Store
+Thumbs.db
+
+# Bỏ qua file môi trường
+.env

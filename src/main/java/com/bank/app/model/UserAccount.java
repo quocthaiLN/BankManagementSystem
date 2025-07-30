@@ -1,6 +1,4 @@
 package com.bank.app.model;
-
-import com.bank.app.dao.*;
 // Khai báo lớp tài khoản: chỉ có getter và setter, constructor và hàm * login *.
 
 // Đây là lớp trong java (bình thường).
@@ -10,7 +8,7 @@ public class UserAccount {
     private String password;
     private String userType; // (customer, employee)
 
-    UserAccount() {
+    public UserAccount() {
         this.username = "";
         this.password = "";
         this.userType = "customer";
@@ -49,15 +47,17 @@ public class UserAccount {
     }
 
     // login: trả về true nếu username tồn tại vaf password đúng với username đó.
-    public boolean login(String username, String password) {
-        UserAccountDAO user_dao = new UserAccountDAO();
-        UserAccount tmp = user_dao.getUserAccount(username);
-        if (tmp == null)
-            return false;
-
-        if (!tmp.getPassword().equals(password))
-            return false;
-
-        return true;
-    }
+    /*
+     * public boolean login(String username, String password) {
+     * UserAccountDAO user_dao = new UserAccountDAO();
+     * UserAccount tmp = user_dao.getUserAccount(username);
+     * if (tmp == null)
+     * return false;
+     * 
+     * if (!tmp.getPassword().equals(password))
+     * return false;
+     * 
+     * return true;
+     * }
+     */
 }

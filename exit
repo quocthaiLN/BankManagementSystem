@@ -1,0 +1,22 @@
+[33m35bc3eb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: checkout: moving from dao-jdbc to main
+[33m1c3cda2[m[33m ([m[1;31morigin/dao-jdbc[m[33m, [m[1;32mdao-jdbc[m[33m)[m HEAD@{1}: checkout: moving from main to dao-jdbc
+[33m35bc3eb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{2}: commit: Ignore IDE and build files
+[33m83c559f[m[33m ([m[1;31morigin/qthang[m[33m)[m HEAD@{3}: checkout: moving from dao-jdbc to main
+[33m1c3cda2[m[33m ([m[1;31morigin/dao-jdbc[m[33m, [m[1;32mdao-jdbc[m[33m)[m HEAD@{4}: checkout: moving from main to dao-jdbc
+[33m83c559f[m[33m ([m[1;31morigin/qthang[m[33m)[m HEAD@{5}: checkout: moving from dao-jdbc to main
+[33m1c3cda2[m[33m ([m[1;31morigin/dao-jdbc[m[33m, [m[1;32mdao-jdbc[m[33m)[m HEAD@{6}: commit: user demo
+[33mb4dcbdb[m HEAD@{7}: commit: file format
+[33m41ba4ee[m HEAD@{8}: commit: main test
+[33m905fb29[m HEAD@{9}: commit: change gitignore
+[33mad49fc3[m HEAD@{10}: checkout: moving from security1 to dao-jdbc
+[33m357fb7e[m[33m ([m[1;32msecurity1[m[33m)[m HEAD@{11}: checkout: moving from dao-jdbc to security1
+[33mad49fc3[m HEAD@{12}: checkout: moving from security1 to dao-jdbc
+[33m357fb7e[m[33m ([m[1;32msecurity1[m[33m)[m HEAD@{13}: checkout: moving from dao-jdbc to security1
+[33mad49fc3[m HEAD@{14}: checkout: moving from security1 to dao-jdbc
+[33m357fb7e[m[33m ([m[1;32msecurity1[m[33m)[m HEAD@{15}: checkout: moving from main to security1
+[33m83c559f[m[33m ([m[1;31morigin/qthang[m[33m)[m HEAD@{16}: checkout: moving from master to main
+[33m95fe789[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{17}: checkout: moving from dao-jdbc to master
+[33mad49fc3[m HEAD@{18}: commit: insert and delete methods
+[33mdcfc817[m HEAD@{19}: commit (amend): login
+[33m95fe789[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{20}: checkout: moving from master to dao-jdbc
+[33m95fe789[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{21}: commit (initial): jdbc-connect database
