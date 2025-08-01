@@ -53,4 +53,4 @@ bin/
 Thumbs.db
 
 # Bỏ qua file môi trường
-.env
+\src\main\resources\key\.env

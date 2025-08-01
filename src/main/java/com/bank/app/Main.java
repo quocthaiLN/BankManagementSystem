@@ -7,8 +7,8 @@ import com.bank.app.model.Customer;
 //import com.bank.app.model.*;
 
 // import com.bank.app.service.*;
-import com.bank.app.service.AccountService.*;
-import com.bank.app.service.CustomerService.*;
+import com.bank.app.service.AccountService.AccountService;
+import com.bank.app.service.CustomerService.CustomerService;
 
 //import com.bank.app.dao.*;
 //import com.bank.app.security.hash.*;
@@ -17,8 +17,9 @@ import com.bank.app.service.CustomerService.*;
 
 public class Main {
     public static void main(String[] args) {
+
         Customer customer = new Customer(
-                1, // customerID
+                16, // customerID
                 "Lê Nguyễn Quốc Thái", // name
                 LocalDate.of(2003, 10, 15), // birthDate
                 "Nam", // gender
@@ -32,5 +33,10 @@ public class Main {
         );
         CustomerService service = new CustomerService();
         service.addCustomer(customer);
+
+        Customer loadedCustomer = service.getCustomer(16);
+        loadedCustomer.display();
+
     }
 }
+// ! lỗi ở cách đọc file .env

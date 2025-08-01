@@ -162,8 +162,8 @@ public class Customer implements User {
         System.out.printf("Customer address: %s \n", this.address);
         System.out.printf("Customer email: %s \n", this.email);
         System.out.printf("Customer type: %s \n", this.type);
-        System.out.printf("Customer ID: %s \n", this.status);
-        System.out.printf("Customer ID: %s \n", this.registerDate.toString());
+        System.out.printf("Customer status: %s \n", this.status);
+        System.out.printf("Customer register day: %s \n", this.registerDate.toString());
 
     }
 }

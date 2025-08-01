@@ -3,8 +3,8 @@ package com.bank.app.model;
 import java.time.LocalDate;
 
 public class Account {
-    private int accountID; // auto increment
-    private int customerID;
+    private String accountID; // auto increment
+    private String customerID;
     private String branchID;
     private String accountType;
     private String currency;
@@ -13,8 +13,7 @@ public class Account {
     private LocalDate openDate;
     private LocalDate closeDate;
 
-
-    Account() {
+    public Account() {
         accountType = "thanh toán";
         currency = "VND";
         balance = 0;
@@ -23,7 +22,8 @@ public class Account {
         closeDate = null;
     }
 
-    public Account(int accountID, int customerID, String branchID, String type, String currency, double balance, String status, LocalDate openDate, LocalDate closeDate) {
+    public Account(String accountID, String customerID, String branchID, String type, String currency, double balance,
+            String status, LocalDate openDate, LocalDate closeDate) {
         this.accountID = accountID;
         this.customerID = customerID;
         this.branchID = branchID;
@@ -36,43 +36,83 @@ public class Account {
     }
 
     // getter
-    public int getAccountID() {
+    public String getAccountID() {
         return this.accountID;
     }
-    public int getCustomerID() {
+
+    public String getCustomerID() {
         return this.customerID;
     }
+
     public String getBranchID() {
         return this.branchID;
     }
+
     public String getAccountType() {
         return this.accountType;
     }
+
     public String getCurrency() {
         return this.currency;
     }
+
     public double getBalance() {
         return this.balance;
     }
+
     public String getStatus() {
         return this.status;
     }
+
     public LocalDate getOpenDate() {
         return this.openDate;
     }
+
     public LocalDate getCloseDate() {
         return this.closeDate;
     }
 
     // setter
-    public void setCustomerID(int cusID) {
+    public void setCustomerID(String cusID) {
         this.customerID = cusID;
+    }
+
+    public void setAccountID(String accountID) {
+        this.accountID = accountID;
+    }
+
+    public void setBranchID(String branchID) {
+        this.branchID = branchID;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setOpenDate(LocalDate openDate) {
+        this.openDate = openDate;
+    }
+
+    public void setCloseDate(LocalDate closeDate) {
+        this.closeDate = closeDate;
     }
 
     // display
     public void display() {
         System.out.printf("Account ID: %d \n", this.accountID);
-        System.out.printf("Customer ID: %d \n", this.customerID );
+        System.out.printf("Customer ID: %d \n", this.customerID);
         System.out.printf("Branch ID: %s \n", this.branchID);
         System.out.printf("Account Type: %s \n", this.accountType);
         System.out.printf("Account Currency: %s \n", this.currency);

@@ -8,11 +8,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+
 import javax.crypto.SecretKey;
 
 public class KeyStoreManager {
-    
-    static private String KEYSTORE_PATH = "src\\main\\resources\\key\\KeyStore.jceks";
+
+    static private String KEYSTORE_PATH = "src/main/resources/key/KeyStore.jceks";
     static private String KEYSTORE_PASSWORD_NAME = "KEYSTORE_PASSWORD";
 
     public boolean initKeyStore(String keyStorePassword) {
@@ -42,7 +44,12 @@ public class KeyStoreManager {
     public boolean addEntry(String aliasEntry, SecretKey secretKey) {
 
         try {
-            Dotenv dotenv = Dotenv.load();
+
+            Dotenv dotenv = Dotenv.configure()
+                    .directory("src/main/resources/key")
+                    .filename(".env")
+                    .load();
+
             char[] pwd = dotenv.get(KEYSTORE_PASSWORD_NAME).toCharArray();
             KeyStore keyStore = KeyStore.getInstance("JCEKS");
             keyStore.load(new FileInputStream(KEYSTORE_PATH), pwd);
@@ -65,7 +72,11 @@ public class KeyStoreManager {
 
     public SecretKey loadEntry(String aliasEntry) {
         try {
-            Dotenv dotenv = Dotenv.load();
+            Dotenv dotenv = Dotenv.configure()
+                    .directory("src/main/resources/key")
+                    .filename(".env")
+                    .load();
+
             char[] pwd = dotenv.get(KEYSTORE_PASSWORD_NAME).toCharArray();
             KeyStore keyStore = KeyStore.getInstance("JCEKS");
 

@@ -6,8 +6,6 @@ import com.bank.app.security.hash.*;
 import com.bank.app.security.keyStore.*;
 import com.bank.app.security.symmetricEncryption.*;
 
-
-
 import java.security.KeyStore;
 
 import javax.crypto.KeyGenerator;
@@ -49,6 +47,7 @@ public class CustomerService implements CustomerServiceImpl {
             keyStoreManager.addEntry(entryAlias, secretKey);
 
             // Tiến hành mã hóa một số trường nhạy cảm
+            encryptedInfoCustomer.setCustomerID(infoCustomer.getCustomerID());
             encryptedInfoCustomer.setName(AESUtil.encrypt(infoCustomer.getName(), secretKey));
             encryptedInfoCustomer.setBirthDate(infoCustomer.getBirthDate());
             encryptedInfoCustomer.setGender(infoCustomer.getGender());
@@ -69,5 +68,34 @@ public class CustomerService implements CustomerServiceImpl {
         }
         return true;
 
+    }
+
+    @Override
+    public Customer getCustomer(int customerID) {
+
+        try {
+            // Tạo đối tượng KeyStoreManager
+            KeyStoreManager keyStoreManager = new KeyStoreManager();
+
+            // Lấy secret key
+            SecretKey secretKey = keyStoreManager.loadEntry(String.valueOf(customerID));
+
+            // Lấy thông tin customer
+            Customer infoCustomer = customerDAO.getCustomerByID(customerID);
+
+            // Decypt các thông tin
+            infoCustomer.setName(AESUtil.decrypt(infoCustomer.getName(), secretKey));
+            infoCustomer.setIdentityNumber(AESUtil.decrypt(infoCustomer.getIndentityNumber(), secretKey));
+            infoCustomer.setPhone(AESUtil.decrypt(infoCustomer.getPhone(), secretKey));
+            infoCustomer.setAddress(AESUtil.decrypt(infoCustomer.getAddress(), secretKey));
+            infoCustomer.setEmail(AESUtil.decrypt(infoCustomer.getEmail(), secretKey));
+            System.out.println("Customer's information has been loaded.");
+            return infoCustomer;
+        }
+
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -23,8 +23,8 @@ public class AccountDAO extends DAO<Account> {
             if (!rs.next())
                 return null;
 
-            int id = rs.getInt(1);
-            int cusID = rs.getInt(2);
+            String id = rs.getString(1);
+            String cusID = rs.getString(2);
             String branchID = rs.getString(3);
             String type = rs.getString(4);
             String currency = rs.getString(5);
@@ -52,7 +52,7 @@ public class AccountDAO extends DAO<Account> {
         return null;
     }
 
-    public Account getAccountByID(int accountID) {
+    public Account getAccountByID(String accountID) {
         Connection conn = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -62,14 +62,14 @@ public class AccountDAO extends DAO<Account> {
             String query = "SELECT * FROM account WHERE account_id = ?";
             pst = conn.prepareStatement(query);
 
-            pst.setInt(1, accountID);
+            pst.setString(1, accountID);
             rs = pst.executeQuery();
 
             if (!rs.next())
                 return null;
 
-            int id = rs.getInt(1);
-            int cusID = rs.getInt(2);
+            String id = rs.getString(1);
+            String cusID = rs.getString(2);
             String branchID = rs.getString(3);
             String type = rs.getString(4);
             String currency = rs.getString(5);
@@ -106,7 +106,7 @@ public class AccountDAO extends DAO<Account> {
             String query = "INSERT INTO account (customer_id, branch_id, account_type, currency, balance, status, open_date, close_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             pst = conn.prepareStatement(query);
 
-            pst.setInt(1, acc.getCustomerID());
+            pst.setString(1, acc.getCustomerID());
             pst.setString(2, acc.getBranchID());
             pst.setString(3, acc.getAccountType());
             pst.setString(4, acc.getCurrency());
