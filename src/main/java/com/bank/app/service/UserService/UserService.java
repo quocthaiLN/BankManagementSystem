@@ -33,7 +33,7 @@ public class UserService {
             customerDAO.insert(cus);
         } else if (type.equals("Employee")) {
             Employee emp = (Employee) newUser;
-            if (employeeDAO.isEmpIDExists(emp.getID())) {
+            if (employeeDAO.isEmpIDExists(emp.getEmployeeID())) {
                 return false;
             }
 

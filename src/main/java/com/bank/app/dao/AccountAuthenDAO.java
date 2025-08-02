@@ -1,6 +1,6 @@
 package com.bank.app.dao;
 
-import com.bank.app.model.UserAccount;
+import com.bank.app.model.AccountAuthen;
 
 import java.sql.*;
 
@@ -10,16 +10,15 @@ import java.sql.*;
 // Nếu username tồn tại, hàm trả về một UserAccount (như class UserAccount)
 // Nếu username không toonf tại, hàm trả về null
 
-public class UserAccountDAO extends DAO<UserAccount> {
-    private final String tableName = "user_account";
+public class AccountAuthenDAO extends DAO<AccountAuthen> {
 
-    public UserAccount getUserAccount(String username) {
+    public AccountAuthen getUserAccount(String username) {
         Connection con = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
         try {
             con = this.getConnection();
-            String query = "SELECT * FROM " + tableName + " WHERE username = ?";
+            String query = "SELECT * FROM account_authen WHERE username = ?";
             pst = con.prepareStatement(query);
             pst.setString(1, username);
 
@@ -29,7 +28,10 @@ public class UserAccountDAO extends DAO<UserAccount> {
             String user = rs.getString(1);
             String pass = rs.getString(2);
             String type = rs.getString(3);
-            UserAccount res = new UserAccount(user, pass, type);
+
+            int account_id = rs.getInt(4);
+            String salt = rs.getString(5);
+            AccountAuthen res = new AccountAuthen(user, salt, pass, type, account_id);
 
             return res;
 
@@ -43,18 +45,20 @@ public class UserAccountDAO extends DAO<UserAccount> {
     }
 
     @Override
-    public void insert(UserAccount user) {
+    public void insert(AccountAuthen user) {
         Connection conn = null;
         PreparedStatement pst = null;
 
         try {
             conn = this.getConnection();
-            String query = "INSERT INTO " + tableName + " VALUES(?, ?, ?)";
+            String query = "INSERT INTO account_authen VALUES(?, ?, ?, ?, ?)";
             pst = conn.prepareStatement(query);
 
             pst.setString(1, user.getUsername());
             pst.setString(2, user.getPassword());
             pst.setString(3, user.getUserType());
+            pst.setInt(4, user.getAccount_id());
+            pst.setString(5, user.getSalt());
 
             int count = pst.executeUpdate();
 
@@ -73,17 +77,17 @@ public class UserAccountDAO extends DAO<UserAccount> {
     }
 
     @Override
-    public void update(UserAccount newUser) {
+    public void update(AccountAuthen newUser) {
 
     }
 
-    public void delete(UserAccount deletedUser) {
+    public void delete(AccountAuthen deletedUser) {
         Connection conn = null;
         PreparedStatement pst = null;
 
         try {
             conn = this.getConnection();
-            String query = "DELETE FROM " + tableName + " WHERE username = ?";
+            String query = "DELETE FROM account_authen WHERE username = ?";
             pst = conn.prepareStatement(query);
             pst.setString(1, deletedUser.getUsername());
             int count = pst.executeUpdate();

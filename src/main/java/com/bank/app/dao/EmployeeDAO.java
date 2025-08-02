@@ -27,8 +27,12 @@ public class EmployeeDAO extends DAO<Employee> {
             String role = rs.getString(4);
             String status = rs.getString(5);
             LocalDate createdAt = rs.getDate(6).toLocalDate();
+            String phone = rs.getString(7);
+            String address = rs.getString(8);
+            String email = rs.getString(9);
+            String username = rs.getString(10);
 
-            return new Employee(id, fullName, branchID, role, status, createdAt);
+            return new Employee(id, fullName, phone, address, email, branchID, role, status, createdAt, username);
 
         } catch (SQLException e) {
             System.out.println("getEmployee method error: " + e);
@@ -46,18 +50,22 @@ public class EmployeeDAO extends DAO<Employee> {
         PreparedStatement pst = null;
         try {
             conn = this.getConnection();
-            String query = "INSERT INTO employee(employee_id, full_name, branch_id, role, status, created_at) VALUES(?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO employee(employee_id, full_name, branch_id, role, status, created_at, phone, address, email, username) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             pst = conn.prepareStatement(query);
 
-            pst.setString(1, employee.getID());
-            pst.setString(2, employee.getName());
+            pst.setString(1, employee.getEmployeeID());
+            pst.setString(2, employee.getFullName());
             pst.setString(3, employee.getBranchID());
             pst.setString(4, employee.getRole());
             pst.setString(5, employee.getStatus());
 
-            Date sqlDate = Date.valueOf(employee.getCreatedDate());
+            Date sqlDate = Date.valueOf(employee.getCreatedAt());
             pst.setDate(6, sqlDate);
-        
+
+            pst.setString(7, employee.getPhone());
+            pst.setString(8, employee.getAddress());
+            pst.setString(9, employee.getEmail());
+            pst.setString(10, employee.getUsername());
             int count = pst.executeUpdate();
 
             System.out.println(count + " rows affected");

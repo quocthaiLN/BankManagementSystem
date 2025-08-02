@@ -3,10 +3,12 @@ package com.bank.app;
 import java.time.LocalDate;
 import java.util.Scanner;
 
+import com.bank.app.dao.EmployeeDAO;
 import com.bank.app.model.Customer;
 //import com.bank.app.model.*;
 
 // import com.bank.app.service.*;
+import com.bank.app.model.Employee;
 import com.bank.app.service.AccountService.AccountService;
 import com.bank.app.service.CustomerService.CustomerService;
 
@@ -18,24 +20,10 @@ import com.bank.app.service.CustomerService.CustomerService;
 public class Main {
     public static void main(String[] args) {
 
-        Customer customer = new Customer(
-                16, // customerID
-                "Lê Nguyễn Quốc Thái", // name
-                LocalDate.of(2003, 10, 15), // birthDate
-                "Nam", // gender
-                "123456789012", // identityNumber
-                "0909123456", // phone
-                "123 Lý Thường Kiệt, Q.10, TPHCM", // address
-                "thai.nguyen@example.com", // email
-                "Cá nhân", // type
-                "Mở", // status
-                LocalDate.now() // registerDate
-        );
-        CustomerService service = new CustomerService();
-        service.addCustomer(customer);
+        Employee emp = new Employee("NV006", "Mai Anh Tuan", "03667283", "12 Nugyen van cu", "abc@gmail.com", "CN04", "Marketing", "đang hoạt động", LocalDate.now(), "");
+        EmployeeDAO empDAO = new EmployeeDAO();
+        empDAO.insert(emp);
 
-        Customer loadedCustomer = service.getCustomer(16);
-        loadedCustomer.display();
 
     }
 }
