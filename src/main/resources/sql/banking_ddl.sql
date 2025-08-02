@@ -103,12 +103,16 @@ CREATE TABLE Currency (
 	CONSTRAINT PK_Currency PRIMARY KEY(currency_code)
 );
 
+
+-- new: account_authen -- 
 create table user_account (
 	username varchar(100) NOT NULL PRIMARY KEY,
     password varchar(100) NOT NULL,
     user_type nvarchar(100),
     CONSTRAINT CHK_user_acount_type CHECK (user_type IN ('customer', 'employee'))
 );
+ 
+
 
 -- =================== Foreign key ==============
 -- -------- account ------------
@@ -252,6 +256,41 @@ VALUES
 ('emp01', 'admin01', 'employee'),
 ('emp02', 'admin02', 'employee'),
 ('emp03', 'admin03', 'employee');
+
+-- =================== Rename, add columns ============
+RENAME TABLE user_account TO account_authen;
+
+-- account_authen 
+ALTER TABLE account_authen
+ADD account_id INT;
+
+ALTER TABLE account_authen
+ADD salt VARCHAR(33);
+
+alter table account_authen
+add constraint FK_accAuthen_account
+foreign key (account_id) references account(account_id);
+
+-- employee
+
+ALTER TABLE employee
+ADD phone varchar(50);
+
+ALTER TABLE employee
+ADD address nvarchar(200);
+
+ALTER TABLE employee
+ADD email varchar(100);
+
+ALTER table employee
+add username varchar(100);
+
+alter table employee
+add constraint FK_employee_accAuthen
+foreign key (username) references account_authen(username);
+
+
+
 
 -- ------------------ RBTV ------------------------
 
