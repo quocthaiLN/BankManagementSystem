@@ -1,6 +1,6 @@
 CREATE DATABASE bankingdb;
 USE bankingdb;
--- DROP DATABASE bankingdb
+
 CREATE TABLE Customer (
 	customer_id  VARCHAR(20) NOT NULL, -- primary key
     name nvarchar(100) NOT NULL ,
@@ -86,6 +86,7 @@ CREATE TABLE Employee (
     phone varchar(50) UNIQUE,
 	address nvarchar(200),
 	email varchar(100) UNIQUE,
+
 	username varchar(100),
 	CONSTRAINT PK_Employee PRIMARY KEY(employee_id),
 	CONSTRAINT CHK_Employee_status CHECK (status IN (N'đang hoạt động', N'nghỉ việc', N'bị khóa'))

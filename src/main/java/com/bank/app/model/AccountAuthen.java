@@ -7,10 +7,10 @@ public class AccountAuthen {
     private String username;
     private String password;
     private String userType; // (customer, employee)
-    private int account_id;
+    private String account_id;
     private String salt;
 
-    public AccountAuthen(String username, String password, String userType, int account_id) {
+    public AccountAuthen(String username, String password, String userType, String account_id) {
         this.username = username;
         this.password = password;
         this.userType = userType;
@@ -23,7 +23,7 @@ public class AccountAuthen {
         this.userType = userType;
     }
 
-    public AccountAuthen(String username, String salt, String password, String userType, int account_id) {
+    public AccountAuthen(String username, String salt, String password, String userType, String account_id) {
         this.username = username;
         this.salt = salt;
         this.password = password;
@@ -55,11 +55,11 @@ public class AccountAuthen {
         this.userType = userType;
     }
 
-    public int getAccount_id() {
+    public String getAccount_id() {
         return account_id;
     }
 
-    public void setAccount_id(int account_id) {
+    public void setAccount_id(String account_id) {
         this.account_id = account_id;
     }
 
@@ -70,7 +70,7 @@ public class AccountAuthen {
     public void setSalt(String salt) {
         this.salt = salt;
     }
-// login: trả về true nếu username tồn tại vaf password đúng với username đó.
+    // login: trả về true nếu username tồn tại vaf password đúng với username đó.
     /*
      * public boolean login(String username, String password) {
      * UserAccountDAO user_dao = new UserAccountDAO();
