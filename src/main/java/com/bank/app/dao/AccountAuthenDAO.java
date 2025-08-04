@@ -29,7 +29,7 @@ public class AccountAuthenDAO extends DAO<AccountAuthen> {
             String pass = rs.getString(2);
             String type = rs.getString(3);
 
-            int account_id = rs.getInt(4);
+            String account_id = rs.getString(4);
             String salt = rs.getString(5);
             AccountAuthen res = new AccountAuthen(user, salt, pass, type, account_id);
 
@@ -57,7 +57,7 @@ public class AccountAuthenDAO extends DAO<AccountAuthen> {
             pst.setString(1, user.getUsername());
             pst.setString(2, user.getPassword());
             pst.setString(3, user.getUserType());
-            pst.setInt(4, user.getAccount_id());
+            pst.setString(4, user.getAccount_id());
             pst.setString(5, user.getSalt());
 
             int count = pst.executeUpdate();

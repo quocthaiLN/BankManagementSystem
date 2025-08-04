@@ -5,7 +5,6 @@ import javax.crypto.SecretKey;
 
 import com.bank.app.dao.AccountDAO;
 import com.bank.app.model.Account;
-import com.bank.app.model.Customer;
 import com.bank.app.security.keyStore.KeyStoreManager;
 import com.bank.app.security.symmetricEncryption.AESUtil;
 
