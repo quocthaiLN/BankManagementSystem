@@ -77,8 +77,8 @@ public class AccountAuthenDAO extends DAO<AccountAuthen> {
     }
 
     @Override
-    public void update(AccountAuthen newUser) {
-
+    public void update(AccountAuthen newUser, String id) {
+        
     }
 
     public void delete(AccountAuthen deletedUser) {

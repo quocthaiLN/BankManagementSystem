@@ -5,5 +5,5 @@ import com.bank.app.model.Customer;
 public interface CustomerServiceImpl {
     public boolean addCustomer(Customer infoCustomer);
 
-    public Customer getCustomer(int customerID);
+    public Customer getCustomer(String customerID);
 }

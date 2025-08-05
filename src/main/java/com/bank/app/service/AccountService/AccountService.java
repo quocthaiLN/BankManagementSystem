@@ -5,8 +5,13 @@ import javax.crypto.SecretKey;
 
 import com.bank.app.dao.AccountDAO;
 import com.bank.app.model.Account;
+import com.bank.app.model.Transaction;
+import com.bank.app.dao.TransactionDAO;
 import com.bank.app.security.keyStore.KeyStoreManager;
 import com.bank.app.security.symmetricEncryption.AESUtil;
+
+import java.util.List;
+import java.util.ArrayList;
 
 public class AccountService implements AccountServiceImpl {
     private static final String prefixEntryAlias = "account_secretkey_id_";
@@ -83,4 +88,107 @@ public class AccountService implements AccountServiceImpl {
         return null;
     }
 
+    public boolean withdraw(double amount, String accountId) {
+        Account acc = getAccount(accountId);
+
+        // Nếu acc không tồn tại
+        if (acc == null) {
+            System.out.println("Account does not exist");
+            return false;
+        }
+
+        // Nếu số dư không đủ
+        if (acc.getBalance() < amount) {
+            System.out.println("Not enough balance");
+            return false;
+        }
+
+        // Thực hiện
+        try {
+            // Lấy số dư mới sau khi rút tiền rồi cập nhật lại
+            double newBalance = acc.getBalance() - amount;
+            acc.setBalance(newBalance);
+
+            // Update lại trong csdl
+            accountDAO.updateBalance(acc.getBalance(), accountId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deposit(double amount, String accountId) {
+        Account acc = getAccount(accountId);
+
+        // Nếu acc không tồn tại
+        if (acc == null) {
+            System.out.println("Account does not exist");
+            return false;
+        }
+
+        // Thực hiện
+        try {
+            // Lấy số dư mới sau khi nạp tiền rồi cập nhật lại
+            double newBalance = acc.getBalance() + amount;
+            acc.setBalance(newBalance);
+
+            // Update lại trong csdl
+            accountDAO.updateBalance(acc.getBalance(), accountId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean tranfer(String fromId, String toId, double amount) {
+        Account fromAcc = getAccount(fromId);
+        Account toAcc = getAccount(toId);
+        // Nếu acc không tồn tại
+        if (fromAcc == null || toAcc == null) {
+            System.out.println("The source account or the destination account does not exist!");
+            return false;
+        }
+
+        // Nếu số dư không đủ
+        if (fromAcc.getBalance() < amount) {
+            System.out.println("Not enough balance");
+            return false;
+        }
+
+        // Thực hiện
+        try {
+
+            // ---------------------Tài khoản nguồn--------------------------
+            // Cập nhật số tiền của tài khoản nguồn sau khi thực hiện giao dịch
+            double newBalance = fromAcc.getBalance() - amount;
+            fromAcc.setBalance(newBalance);
+
+            // Update lại tài khoản nguồn trong csdl
+            accountDAO.updateBalance(fromAcc.getBalance(), fromId);
+
+            // ---------------------Tài khoản đích--------------------------
+
+            // // Cập nhật số tiền của tài khoản đích sau khi thực hiện giao dịch
+            newBalance = toAcc.getBalance() + amount;
+            toAcc.setBalance(newBalance);
+
+            // Update lại tài khoản nguồn trong csdl
+            accountDAO.updateBalance(toAcc.getBalance(), toId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void viewTransactionHistory(String id) {
+        TransactionDAO transactionDAO = new TransactionDAO();
+        List<Transaction> transactions = new ArrayList<>();
+        transactions = transactionDAO.getTransactionByAccId(id);
+        for(Transaction transaction : transactions){
+            transaction.display();
+        }
+    }
 }
