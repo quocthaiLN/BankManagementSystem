@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public class Transaction {
     private String transactionID;
-    private int fromAccount; // Account ID
-    private int toAccount; // AccountID
+    private String fromAccount; // Account ID
+    private String toAccount; // AccountID
     private String transactionType;
     private double amount;
     private String currency;
@@ -14,8 +14,8 @@ public class Transaction {
 
     Transaction() {
         this.transactionID = "";
-        this.fromAccount = 0;
-        this.toAccount = 0;
+        this.fromAccount = "";
+        this.toAccount = "";
         this.transactionType = "";
         this.amount = 0;
         this.currency = "VND";
@@ -23,7 +23,7 @@ public class Transaction {
         this.status = "thành công";
     }
 
-    Transaction(String transactionID, int fromAccount, int toAccount, String transactionType, double amount, String currency, LocalDate date, String status) {
+    public Transaction(String transactionID, String fromAccount, String toAccount, String transactionType, double amount, String currency, LocalDate date, String status) {
         this.transactionID = transactionID;
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
@@ -31,6 +31,70 @@ public class Transaction {
         this.amount = amount;
         this.currency = currency;
         this.date = date;
+        this.status = status;
+    }
+
+    public String getTransactionID() {
+        return transactionID;
+    }
+
+    public void setTransactionID(String transactionID) {
+        this.transactionID = transactionID;
+    }
+
+    public String getFromAccount() {
+        return fromAccount;
+    }
+
+    public void setFromAccount(String fromAccount) {
+        this.fromAccount = fromAccount;
+    }
+
+    public String getToAccount() {
+        return toAccount;
+    }
+
+    public void setToAccount(String toAccount) {
+        this.toAccount = toAccount;
+    }
+
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
         this.status = status;
     }
 }
