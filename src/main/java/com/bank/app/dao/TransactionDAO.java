@@ -54,7 +54,7 @@ public class TransactionDAO extends DAO<Transaction>{
         ResultSet rs = null;
         try {
             con = this.getConnection();
-            String query = "SELECT * FROM transaction WHERE from_id = ? or to_id = ?";
+            String query = "SELECT * FROM transaction WHERE from_account = ? or to_account = ?";
             pst = con.prepareStatement(query);
             pst.setString(1, accountID);
             pst.setString(2, accountID);

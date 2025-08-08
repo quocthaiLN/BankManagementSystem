@@ -119,6 +119,7 @@ public class CustomerDAO extends DAO<Customer> {
 
             System.out.println(count + " rows affected");
 
+
         } catch (SQLException e) {
             if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) { // Trùng khóa chính
                 System.out.println("Duplicate key detected. Please change another customer!!");
@@ -129,6 +130,7 @@ public class CustomerDAO extends DAO<Customer> {
         } finally {
             this.close(conn, pst);
         }
+
     }
 
     // Delete by Identity Number

@@ -109,20 +109,18 @@ public class Transaction {
         this.status = status;
     }
 
-    public void display() {
-        System.out.print(this.transactionID + ", ");
-        System.out.print(this.fromAccount + ", ");
-        System.out.print(this.toAccount + ", ");
-        System.out.print(this.transactionType + ", ");
-        System.out.print(this.amount + ", ");
-        System.out.print(this.currency + ", ");
-        if (this.date != null) {
-            System.out.print(this.date.toString() + ", ");
-        } else {
-            System.out.print("NULL, ");
-        }
-        System.out.println(this.status);
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "transactionID='" + transactionID + '\'' +
+                ", fromAccount='" + fromAccount + '\'' +
+                ", toAccount='" + toAccount + '\'' +
+                ", transactionType='" + transactionType + '\'' +
+                ", amount=" + amount +
+                ", currency='" + currency + '\'' +
+                ", date=" + date +
+                ", status='" + status + '\'' +
+                '}';
     }
-
-
 }

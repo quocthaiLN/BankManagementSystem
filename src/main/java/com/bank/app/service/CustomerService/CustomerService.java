@@ -1,5 +1,7 @@
 package com.bank.app.service.CustomerService;
 
+import com.bank.app.dao.AccountDAO;
+import com.bank.app.model.Account;
 import com.bank.app.model.Customer;
 import com.bank.app.dao.CustomerDAO;
 import com.bank.app.security.hash.*;
@@ -7,6 +9,7 @@ import com.bank.app.security.keyStore.*;
 import com.bank.app.security.symmetricEncryption.*;
 
 import java.security.KeyStore;
+import java.util.List;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -19,9 +22,17 @@ import com.bank.app.security.symmetricEncryption.*;
 
 public class CustomerService implements CustomerServiceImpl {
     private CustomerDAO customerDAO = null;
+    private AccountDAO accountDAO = null;
+
+
+    public CustomerService(CustomerDAO customerDAO, AccountDAO accountDAO) {
+        this.customerDAO = customerDAO;
+        this.accountDAO = accountDAO;
+    }
 
     public CustomerService() {
         this.customerDAO = new CustomerDAO();
+        this.accountDAO = new AccountDAO();
     }
 
     @Override
@@ -97,5 +108,10 @@ public class CustomerService implements CustomerServiceImpl {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public List<Account> showAccount(String customerID) {
+        return accountDAO.getAccountsByCustomerID(customerID);
     }
 }

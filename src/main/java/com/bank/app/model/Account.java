@@ -109,16 +109,18 @@ public class Account {
         this.closeDate = closeDate;
     }
 
-    // display
-    public void display() {
-        System.out.printf("Account ID: %d \n", this.accountID);
-        System.out.printf("Customer ID: %d \n", this.customerID);
-        System.out.printf("Branch ID: %s \n", this.branchID);
-        System.out.printf("Account Type: %s \n", this.accountType);
-        System.out.printf("Account Currency: %s \n", this.currency);
-        System.out.printf("Balance: %f \n", this.balance);
-        System.out.printf("Status: %s\n", this.status);
-        System.out.printf("Open Date: %s\n", (this.openDate != null) ? this.openDate.toString() : "null");
-        System.out.printf("Close Date: %s\n", (this.closeDate != null) ? this.closeDate.toString() : "null");
+    @Override
+    public String toString() {
+        return "Account{" +
+                "accountID='" + accountID + '\'' +
+                ", customerID='" + customerID + '\'' +
+                ", branchID='" + branchID + '\'' +
+                ", accountType='" + accountType + '\'' +
+                ", currency='" + currency + '\'' +
+                ", balance=" + balance +
+                ", status='" + status + '\'' +
+                ", openDate=" + openDate +
+                ", closeDate=" + closeDate +
+                '}';
     }
 }

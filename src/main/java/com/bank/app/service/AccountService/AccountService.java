@@ -188,7 +188,7 @@ public class AccountService implements AccountServiceImpl {
         List<Transaction> transactions = new ArrayList<>();
         transactions = transactionDAO.getTransactionByAccId(id);
         for(Transaction transaction : transactions){
-            transaction.display();
+            System.out.println(transaction);
         }
     }
 }

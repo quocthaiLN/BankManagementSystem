@@ -16,6 +16,7 @@ public class Customer implements User {
     private LocalDate registerDate;
 
     public Customer() {
+        this.customerID = "";
         this.name = "";
         this.birthDate = null;
         this.gender = "";
@@ -151,19 +152,20 @@ public class Customer implements User {
         this.registerDate = registerDate;
     }
 
-    // display
-    public void display() {
-        System.out.printf("Customer ID: %d \n", this.customerID);
-        System.out.printf("Customer Name: %s \n", this.name);
-        System.out.printf("Customer DOB: %s \n", this.birthDate.toString());
-        System.out.printf("Customer Gender: %s \n", this.gender);
-        System.out.printf("Customer Identity Num: %s \n", this.identityNumber);
-        System.out.printf("Customer phone: %s \n", this.phone);
-        System.out.printf("Customer address: %s \n", this.address);
-        System.out.printf("Customer email: %s \n", this.email);
-        System.out.printf("Customer type: %s \n", this.type);
-        System.out.printf("Customer status: %s \n", this.status);
-        System.out.printf("Customer register day: %s \n", this.registerDate.toString());
-
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerID='" + customerID + '\'' +
+                ", name='" + name + '\'' +
+                ", birthDate=" + birthDate +
+                ", gender='" + gender + '\'' +
+                ", identityNumber='" + identityNumber + '\'' +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", type='" + type + '\'' +
+                ", status='" + status + '\'' +
+                ", registerDate=" + registerDate +
+                '}';
     }
 }
