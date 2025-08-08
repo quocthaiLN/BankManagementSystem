@@ -24,7 +24,7 @@ public class CustomerDAO extends DAO<Customer> {
                 return null;
             }
 
-            int cusID = rs.getInt(1);
+            String cusID = rs.getString(1);
             String cusName = rs.getString(2);
             LocalDate cusBirthDate = rs.getDate(3).toLocalDate();
             String cusGender = rs.getString(4);
@@ -49,7 +49,7 @@ public class CustomerDAO extends DAO<Customer> {
     }
 
     // Lấy customer bằng id
-    public Customer getCustomerByID(int customerID) {
+    public Customer getCustomerByID(String customerID) {
         Connection conn = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -58,14 +58,14 @@ public class CustomerDAO extends DAO<Customer> {
             conn = this.getConnection();
             String query = "SELECT * FROM customer WHERE customer_id = ?";
             pst = conn.prepareStatement(query);
-            pst.setInt(1, customerID);
+            pst.setString(1, customerID);
 
             rs = pst.executeQuery();
             if (!rs.next()) {
                 return null;
             }
 
-            int cusID = rs.getInt(1);
+            String cusID = rs.getString(1);
             String cusName = rs.getString(2);
             LocalDate cusBirthDate = rs.getDate(3).toLocalDate();
             String cusGender = rs.getString(4);
@@ -155,8 +155,7 @@ public class CustomerDAO extends DAO<Customer> {
     }
 
     @Override
-    public void update(Customer customer) {
-
+    public void update(Customer customer, String id) {
     }
 
     // Hàm kiểm tra customer đã tồn tại trong database chưa (kiểm tra bằng cccd)

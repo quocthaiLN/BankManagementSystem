@@ -7,4 +7,12 @@ public interface AccountServiceImpl {
     public boolean addAccount(Account infoAccount);
 
     public Account getAccount(String accountID);
+
+    public boolean withdraw(double amount, String accountId);
+
+    public boolean deposit(double amount, String accountId);
+
+    public boolean tranfer(String fromId, String toId, double amount);
+    
+    public void viewTransactionHistory(String id);
 }

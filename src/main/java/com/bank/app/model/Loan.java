@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class Loan {
     private String loanID;
-    private int customerID;
+    private String customerID;
     private String loanType;
     private double amount;
     private String currency;
@@ -16,7 +16,7 @@ public class Loan {
 
     Loan() {
         this.loanID = "";
-        this.customerID = 0;
+        this.customerID = "";
         this.loanType = "";
         this.amount = 0;
         this.currency = "VND";
@@ -27,7 +27,7 @@ public class Loan {
         this.collateralID = "";
     }
 
-    Loan(String loanID, int customerID, String loanType, double amount, String currency, double interestRate, LocalDate startDate, LocalDate endDate, String status, String collateralID) {
+    Loan(String loanID, String customerID, String loanType, double amount, String currency, double interestRate, LocalDate startDate, LocalDate endDate, String status, String collateralID) {
         this.loanID = loanID;
         this.customerID = customerID;
         this.loanType = loanType;

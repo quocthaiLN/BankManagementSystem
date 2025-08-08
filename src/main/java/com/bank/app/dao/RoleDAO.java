@@ -92,7 +92,7 @@ public class RoleDAO extends DAO<Role> {
 
     // Cập nhật tên role theo ID
     @Override
-    public void update(Role role) {
+    public void update(Role role, String id) {
         Connection conn = null;
         PreparedStatement pst = null;
 

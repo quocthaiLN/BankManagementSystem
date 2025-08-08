@@ -92,7 +92,7 @@ public class PermissionDAO extends DAO<Permission> {
 
     // Cập nhật permission
     @Override
-    public void update(Permission p) {
+    public void update(Permission p, String id) {
         Connection conn = null;
         PreparedStatement pst = null;
 

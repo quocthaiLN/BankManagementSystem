@@ -34,6 +34,17 @@ public class Transaction {
         this.status = status;
     }
 
+    public Transaction(String fromAccount, String toAccount, String transactionType, double amount, String currency,
+            LocalDate date, String status) {
+        this.fromAccount = fromAccount;
+        this.toAccount = toAccount;
+        this.transactionType = transactionType;
+        this.amount = amount;
+        this.currency = currency;
+        this.date = date;
+        this.status = status;
+    }
+
     public String getTransactionID() {
         return transactionID;
     }
@@ -97,4 +108,21 @@ public class Transaction {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public void display() {
+        System.out.print(this.transactionID + ", ");
+        System.out.print(this.fromAccount + ", ");
+        System.out.print(this.toAccount + ", ");
+        System.out.print(this.transactionType + ", ");
+        System.out.print(this.amount + ", ");
+        System.out.print(this.currency + ", ");
+        if (this.date != null) {
+            System.out.print(this.date.toString() + ", ");
+        } else {
+            System.out.print("NULL, ");
+        }
+        System.out.println(this.status);
+    }
+
+
 }

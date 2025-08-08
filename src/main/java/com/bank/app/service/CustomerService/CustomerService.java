@@ -71,7 +71,7 @@ public class CustomerService implements CustomerServiceImpl {
     }
 
     @Override
-    public Customer getCustomer(int customerID) {
+    public Customer getCustomer(String customerID) {
 
         try {
             // Tạo đối tượng KeyStoreManager

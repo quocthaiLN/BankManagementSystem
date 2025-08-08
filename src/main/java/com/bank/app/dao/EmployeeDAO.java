@@ -104,8 +104,8 @@ public class EmployeeDAO extends DAO<Employee> {
     }
 
     @Override
-    public void update(Employee employee) {
-
+    public void update(Employee employee, String id) {
+        
     }
 
     //Hàm kiểm tra xem Employee đã tồn tại trong database chưa (kiểm tra bằng ID)

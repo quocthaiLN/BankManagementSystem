@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public class AccountDAO extends DAO<Account> {
 
-    public Account getAccountByCustomerID(int customerID) {
+    public Account getAccountByCustomerID(String customerID) {
         Connection conn = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -17,7 +17,7 @@ public class AccountDAO extends DAO<Account> {
             String query = "SELECT * FROM account WHERE customer_id = ?";
             pst = conn.prepareStatement(query);
 
-            pst.setInt(1, customerID);
+            pst.setString(1, customerID);
             rs = pst.executeQuery();
 
             if (!rs.next())
@@ -140,7 +140,7 @@ public class AccountDAO extends DAO<Account> {
     }
 
     // Xóa theo ID
-    public boolean deleteByID(int accountID) {
+    public boolean deleteByID(String accountID) {
         Connection conn = null;
         PreparedStatement pst = null;
         try {
@@ -148,7 +148,7 @@ public class AccountDAO extends DAO<Account> {
             String query = "DELETE FROM account WHERE account_id = ?";
             pst = conn.prepareStatement(query);
 
-            pst.setInt(1, accountID);
+            pst.setString(1, accountID);
             int count = pst.executeUpdate();
 
             if (count == 0)
@@ -163,7 +163,70 @@ public class AccountDAO extends DAO<Account> {
     }
 
     @Override
-    public void update(Account acc) {
+    public void update(Account acc, String accountId) {
+        Connection conn = null;
+        PreparedStatement pst = null;
+        try {
+            conn = this.getConnection();
+            String query = "UPDATE ACCOUNT SET customer_id = ?, branch_id = ?, account_type = ?, currency = ?, balance = ?, status = ?, open_date  = ?, close_date = ? WHERE account_id = ?";
+            pst = conn.prepareStatement(query);
+            pst.setString(1, acc.getCustomerID());
+            pst.setString(2, acc.getBranchID());
+            pst.setString(3, acc.getAccountType());
+            pst.setString(4, acc.getCurrency());
+            pst.setDouble(5, acc.getBalance());
+            pst.setString(6, acc.getStatus());
 
+            Date sqlDate = Date.valueOf(acc.getOpenDate());
+            pst.setDate(7, sqlDate);
+
+            // xử lý date null trước khi truyền vào sql
+            if (acc.getCloseDate() == null) {
+                pst.setNull(8, Types.DATE);
+            } else {
+                sqlDate = Date.valueOf(acc.getCloseDate());
+                pst.setDate(8, sqlDate);
+            }
+            pst.setString(9, accountId);
+            int count = pst.executeUpdate();
+
+            if (count == 0) {
+                System.out.println("No account was updated. Possibly invalid account_id: " + accountId);
+            } else {
+                System.out.println("Account updated successfully.");
+            }
+            return;
+        } catch (Exception e) {
+            System.out.println("account update method err: " + e);
+        } finally {
+            this.close(conn, pst);
+        }
+
+        return;
+    }
+
+    public void updateBalance(double balance, String accountId){
+        Connection conn = null;
+        PreparedStatement pst = null;
+        try {
+            conn = this.getConnection();
+            String query = "UPDATE ACCOUNT SET balance = ? WHERE account_id = ?";
+            pst = conn.prepareStatement(query);
+            pst.setDouble(1, balance);
+            pst.setString(2, accountId);
+            int count = pst.executeUpdate();
+
+            if (count == 0) {
+                System.out.println("No account was updated. Possibly invalid account_id: " + accountId);
+            } else {
+                System.out.println("Balance updated successfully.");
+            }
+            return;
+        } catch (Exception e) {
+            System.out.println("Balance update method err: " + e);
+        } finally {
+            this.close(conn, pst);
+        }
+        return;
     }
 }

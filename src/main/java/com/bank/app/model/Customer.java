@@ -3,7 +3,7 @@ package com.bank.app.model;
 import java.time.LocalDate;
 
 public class Customer implements User {
-    private int customerID; // auto increment
+    private String customerID; // auto increment
     private String name;
     private LocalDate birthDate;
     private String gender;
@@ -28,7 +28,7 @@ public class Customer implements User {
         this.registerDate = LocalDate.now();
     }
 
-    public Customer(int customerID, String name, LocalDate birthDate, String gender, String identityNumber,
+    public Customer(String customerID, String name, LocalDate birthDate, String gender, String identityNumber,
             String phone, String address, String email, String type, String status, LocalDate registerDate) {
         this.customerID = customerID;
         this.name = name;
@@ -63,7 +63,7 @@ public class Customer implements User {
     }
 
     // getter
-    public int getCustomerID() {
+    public String getCustomerID() {
         return this.customerID;
     }
 
@@ -107,7 +107,7 @@ public class Customer implements User {
         return this.registerDate;
     }
 
-    public void setCustomerID(int customerID) {
+    public void setCustomerID(String customerID) {
         this.customerID = customerID;
     }
 
