@@ -8,131 +8,81 @@ import java.util.List;
 
 public class RoleDAO extends DAO<Role> {
 
-    // Lấy role theo ID
-    public Role getByID(int roleID) {
+    /**
+     * Lấy Role của một user dựa vào user_id
+     */
+    public Role getRoleByUserId(String userId) {
+        Role role = null;
+        String sql = "SELECT r.role_id, r.role_name " +
+                "FROM User_Roles ur " +
+                "JOIN Roles r ON ur.role_id = r.role_id " +
+                "WHERE ur.user_id = ?";
+
         Connection conn = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
 
         try {
-            conn = this.getConnection();
-            String query = "SELECT * FROM role WHERE role_id = ?";
-            pst = conn.prepareStatement(query);
-            pst.setInt(1, roleID);
+            conn = getConnection();
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, userId);
             rs = pst.executeQuery();
 
             if (rs.next()) {
+                int roleId = rs.getInt("role_id");
                 String roleName = rs.getString("role_name");
-                return new Role(roleID, roleName);
+                role = new Role(roleId, roleName);
             }
-
         } catch (SQLException e) {
-            System.out.println("getByID error: " + e);
+            e.printStackTrace();
         } finally {
-            this.close(conn, pst, rs);
+            close(conn, pst, rs);
         }
 
-        return null;
+        return role;
     }
 
-    // Lấy danh sách tất cả role
-    public List<Role> getAll() {
-        List<Role> roles = new ArrayList<>();
-        Connection conn = null;
-        Statement st = null;
-        ResultSet rs = null;
-
-        try {
-            conn = this.getConnection();
-            String query = "SELECT * FROM role";
-            st = conn.createStatement();
-            rs = st.executeQuery(query);
-
-            while (rs.next()) {
-                int id = rs.getInt("role_id");
-                String name = rs.getString("role_name");
-                roles.add(new Role(id, name));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("getAll error: " + e);
-        } finally {
-            this.close(conn, st, rs);
-        }
-
-        return roles;
-    }
-
-    // Thêm role mới
     @Override
-    public void insert(Role role) {
+    public String insert(Role data) {
+        // Có thể triển khai nếu cần thêm Role vào DB
+        String sql = "INSERT INTO Roles (role_id, role_name) VALUES (?, ?)";
         Connection conn = null;
         PreparedStatement pst = null;
 
         try {
-            conn = this.getConnection();
-            String query = "INSERT INTO role (role_id, role_name) VALUES (?, ?)";
-            pst = conn.prepareStatement(query);
-            pst.setInt(1, role.getRoleID());
-            pst.setString(2, role.getRoleName());
-
-            int count = pst.executeUpdate();
-            System.out.println(count + " rows affected");
-
+            conn = getConnection();
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, data.getRoleID());
+            pst.setString(2, data.getRoleName());
+            pst.executeUpdate();
+            return "Insert success";
         } catch (SQLException e) {
             if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) {
-                System.out.println("Duplicate role ID. Please choose a different one!");
-            } else {
-                System.out.println("Insert error: " + e);
+                return "Duplicate role_id";
             }
+            e.printStackTrace();
+            return "Insert failed";
         } finally {
-            this.close(conn, pst);
+            close(conn, pst);
         }
     }
 
-    // Cập nhật tên role theo ID
     @Override
-    public void update(Role role, String id) {
+    public void update(Role data, String id) {
+        String sql = "UPDATE Roles SET role_name = ? WHERE role_id = ?";
         Connection conn = null;
         PreparedStatement pst = null;
 
         try {
-            conn = this.getConnection();
-            String query = "UPDATE role SET role_name = ? WHERE role_id = ?";
-            pst = conn.prepareStatement(query);
-            pst.setString(1, role.getRoleName());
-            pst.setInt(2, role.getRoleID());
-
-            int count = pst.executeUpdate();
-            System.out.println(count + " rows affected");
-
+            conn = getConnection();
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, data.getRoleName());
+            pst.setInt(2, data.getRoleID());
+            pst.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Update error: " + e);
+            e.printStackTrace();
         } finally {
-            this.close(conn, pst);
+            close(conn, pst);
         }
-    }
-
-    // Xóa role theo ID
-    public boolean deleteByID(int roleID) {
-        Connection conn = null;
-        PreparedStatement pst = null;
-
-        try {
-            conn = this.getConnection();
-            String query = "DELETE FROM role WHERE role_id = ?";
-            pst = conn.prepareStatement(query);
-            pst.setInt(1, roleID);
-
-            int count = pst.executeUpdate();
-            return count > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Delete error: " + e);
-        } finally {
-            this.close(conn, pst);
-        }
-
-        return false;
     }
 }

@@ -90,7 +90,7 @@ public class CustomerDAO extends DAO<Customer> {
     }
 
     @Override
-    public void insert(Customer customer) {
+    public String insert(Customer customer) {
         Connection conn = null;
         PreparedStatement pst = null;
 
@@ -119,6 +119,12 @@ public class CustomerDAO extends DAO<Customer> {
 
             System.out.println(count + " rows affected");
 
+            try (ResultSet rs = pst.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getString(1); // account_id vừa sinh
+                }
+            }
+
         } catch (SQLException e) {
             if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) { // Trùng khóa chính
                 System.out.println("Duplicate key detected. Please change another customer!!");
@@ -129,6 +135,7 @@ public class CustomerDAO extends DAO<Customer> {
         } finally {
             this.close(conn, pst);
         }
+        return null;
     }
 
     // Delete by Identity Number

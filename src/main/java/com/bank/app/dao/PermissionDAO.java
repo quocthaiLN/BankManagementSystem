@@ -3,8 +3,8 @@ package com.bank.app.dao;
 import com.bank.app.model.Permission;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PermissionDAO extends DAO<Permission> {
 
@@ -36,8 +36,8 @@ public class PermissionDAO extends DAO<Permission> {
     }
 
     // Lấy toàn bộ permission
-    public List<Permission> getAll() {
-        List<Permission> permissions = new ArrayList<>();
+    public Set<Permission> getAll() {
+        Set<Permission> permissions = new HashSet<>();
         Connection conn = null;
         Statement st = null;
         ResultSet rs = null;
@@ -65,7 +65,7 @@ public class PermissionDAO extends DAO<Permission> {
 
     // Thêm mới permission
     @Override
-    public void insert(Permission p) {
+    public String insert(Permission p) {
         Connection conn = null;
         PreparedStatement pst = null;
 
@@ -79,6 +79,11 @@ public class PermissionDAO extends DAO<Permission> {
             int count = pst.executeUpdate();
             System.out.println(count + " rows affected");
 
+            try (ResultSet rs = pst.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return String.valueOf(rs.getInt(1)); // account_id vừa sinh
+                }
+            }
         } catch (SQLException e) {
             if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) {
                 System.out.println("Duplicate permission ID. Please choose a different one!");
@@ -88,6 +93,7 @@ public class PermissionDAO extends DAO<Permission> {
         } finally {
             this.close(conn, pst);
         }
+        return null;
     }
 
     // Cập nhật permission
@@ -135,4 +141,41 @@ public class PermissionDAO extends DAO<Permission> {
 
         return false;
     }
+
+    // Lấy tất cả quyền của user
+    public Set<Permission> getPermissionsByUserId(String userId, String userType) {
+        Set<Permission> permissions = new HashSet<>();
+        Connection conn = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+
+        try {
+            conn = this.getConnection();
+            String query = """
+                        SELECT p.permission_id, p.permission_name
+                        FROM permission p
+                        INNER JOIN user_permission up ON p.permission_id = up.permission_id
+                        WHERE up.user_id = ?
+                    """;
+
+            pst = conn.prepareStatement(query);
+            pst.setString(1, userId);
+            pst.setString(2, userType);
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("permission_id");
+                String name = rs.getString("permission_name");
+                permissions.add(new Permission(id, name));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("getPermissionsByUserId error: " + e);
+        } finally {
+            this.close(conn, pst, rs);
+        }
+
+        return permissions;
+    }
+
 }

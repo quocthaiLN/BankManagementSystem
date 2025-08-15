@@ -19,7 +19,8 @@ public class EmployeeDAO extends DAO<Employee> {
             pst.setString(1, employeeID);
 
             rs = pst.executeQuery();
-            if(!rs.next()) return null;
+            if (!rs.next())
+                return null;
 
             String id = rs.getString(1);
             String fullName = rs.getString(2);
@@ -36,7 +37,7 @@ public class EmployeeDAO extends DAO<Employee> {
 
         } catch (SQLException e) {
             System.out.println("getEmployee method error: " + e);
-        }finally {
+        } finally {
             this.close(conn, pst, rs);
         }
 
@@ -44,43 +45,48 @@ public class EmployeeDAO extends DAO<Employee> {
     }
 
     @Override
-    public void insert(Employee employee) {
+    public String insert(Employee employee) {
 
         Connection conn = null;
         PreparedStatement pst = null;
         try {
             conn = this.getConnection();
-            String query = "INSERT INTO employee(employee_id, full_name, branch_id, role, status, created_at, phone, address, email, username) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO employee( full_name, branch_id, role, status, created_at, phone, address, email, username) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             pst = conn.prepareStatement(query);
 
-            pst.setString(1, employee.getEmployeeID());
-            pst.setString(2, employee.getFullName());
-            pst.setString(3, employee.getBranchID());
-            pst.setString(4, employee.getRole());
-            pst.setString(5, employee.getStatus());
+            pst.setString(1, employee.getFullName());
+            pst.setString(2, employee.getBranchID());
+            pst.setString(3, employee.getRole());
+            pst.setString(4, employee.getStatus());
 
             Date sqlDate = Date.valueOf(employee.getCreatedAt());
-            pst.setDate(6, sqlDate);
+            pst.setDate(5, sqlDate);
 
-            pst.setString(7, employee.getPhone());
-            pst.setString(8, employee.getAddress());
-            pst.setString(9, employee.getEmail());
-            pst.setString(10, employee.getUsername());
+            pst.setString(6, employee.getPhone());
+            pst.setString(7, employee.getAddress());
+            pst.setString(8, employee.getEmail());
+            pst.setString(9, employee.getUsername());
             int count = pst.executeUpdate();
 
             System.out.println(count + " rows affected");
-            
-        }catch(SQLException e) {
-            if(e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) { // Trùng khóa chính
+
+            try (ResultSet rs = pst.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getString(1); // account_id vừa sinh
+                }
+            }
+
+        } catch (SQLException e) {
+            if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) { // Trùng khóa chính
                 System.out.println("Duplicate key detected. Please change another employee!!");
-            }else {
+            } else {
                 System.out.println("insert employee method error: " + e);
             }
-        }finally {
+        } finally {
             this.close(conn, pst);
         }
+        return null;
     }
-
 
     public boolean deleteByID(String employeeID) {
         Connection conn = null;
@@ -93,7 +99,8 @@ public class EmployeeDAO extends DAO<Employee> {
             pst.setString(1, employeeID);
             int count = pst.executeUpdate();
 
-            if(count == 0) return false;
+            if (count == 0)
+                return false;
         } catch (Exception e) {
             System.out.println("employee delete method: " + e);
         } finally {
@@ -105,10 +112,10 @@ public class EmployeeDAO extends DAO<Employee> {
 
     @Override
     public void update(Employee employee, String id) {
-        
+
     }
 
-    //Hàm kiểm tra xem Employee đã tồn tại trong database chưa (kiểm tra bằng ID)
+    // Hàm kiểm tra xem Employee đã tồn tại trong database chưa (kiểm tra bằng ID)
     public boolean isEmpIDExists(String empID) {
         Connection conn = null;
         PreparedStatement pst = null;
@@ -122,9 +129,9 @@ public class EmployeeDAO extends DAO<Employee> {
             rs = pst.executeQuery();
 
             return rs.next();
-        }catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("check employee ID Employee method error: " + e);
-        }finally {
+        } finally {
             this.close(conn, pst, rs);
         }
 

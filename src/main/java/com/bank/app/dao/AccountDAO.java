@@ -98,38 +98,41 @@ public class AccountDAO extends DAO<Account> {
     }
 
     @Override
-    public void insert(Account acc) {
+    public String insert(Account acc) {
         Connection conn = null;
         PreparedStatement pst = null;
         try {
             conn = this.getConnection();
-            String query = "INSERT INTO account (customer_id, branch_id, account_type, currency, balance, status, open_date, close_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            pst = conn.prepareStatement(query);
+            String query = "INSERT INTO account (branch_id, account_type, currency, balance, status, open_date, close_date) "
+                    +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-            pst.setString(1, acc.getCustomerID());
-            pst.setString(2, acc.getBranchID());
-            pst.setString(3, acc.getAccountType());
-            pst.setString(4, acc.getCurrency());
-            pst.setDouble(5, acc.getBalance());
-            pst.setString(6, acc.getStatus());
+            pst = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
-            Date sqlDate = Date.valueOf(acc.getOpenDate());
-            pst.setDate(7, sqlDate);
+            pst.setString(1, acc.getBranchID());
+            pst.setString(2, acc.getAccountType());
+            pst.setString(3, acc.getCurrency());
+            pst.setDouble(4, acc.getBalance());
+            pst.setString(5, acc.getStatus());
+            pst.setDate(6, Date.valueOf(acc.getOpenDate()));
 
-            // xử lý date null trước khi truyền vào sql
             if (acc.getCloseDate() == null) {
-                pst.setNull(8, Types.DATE);
+                pst.setNull(7, Types.DATE);
             } else {
-                sqlDate = Date.valueOf(acc.getCloseDate());
-                pst.setDate(8, sqlDate);
+                pst.setDate(7, Date.valueOf(acc.getCloseDate()));
             }
 
             int count = pst.executeUpdate();
-
             System.out.println(count + " rows affected");
 
+            try (ResultSet rs = pst.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getString(1); // account_id vừa sinh
+                }
+            }
+
         } catch (SQLException e) {
-            if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) { // Trùng khóa chính
+            if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) {
                 System.out.println("Duplicate key detected. Please change another account!!");
             } else {
                 System.out.println("insert account method error: " + e);
@@ -137,6 +140,8 @@ public class AccountDAO extends DAO<Account> {
         } finally {
             this.close(conn, pst);
         }
+
+        return null;
     }
 
     // Xóa theo ID
@@ -205,7 +210,7 @@ public class AccountDAO extends DAO<Account> {
         return;
     }
 
-    public void updateBalance(double balance, String accountId){
+    public void updateBalance(double balance, String accountId) {
         Connection conn = null;
         PreparedStatement pst = null;
         try {

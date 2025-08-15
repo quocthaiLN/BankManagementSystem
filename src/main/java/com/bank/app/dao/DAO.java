@@ -80,7 +80,7 @@ public abstract class DAO<T> {
     }
 
     // Các thao tác với database
-    public abstract void insert(T data);
+    public abstract String insert(T data);
 
     public abstract void update(T data, String id);
 }

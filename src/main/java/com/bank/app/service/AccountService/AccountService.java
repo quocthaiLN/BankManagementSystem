@@ -35,13 +35,6 @@ public class AccountService implements AccountServiceImpl {
             keyGen.init(128);
             SecretKey secretKey = keyGen.generateKey();
 
-            // Tạo Alias bằng accountID
-            String entryAlias = prefixEntryAlias + infoAccount.getAccountID();
-
-            // Lưu khóa bí mật vào KeyStore
-            KeyStoreManager keyStoreManager = new KeyStoreManager();
-            keyStoreManager.addEntry(entryAlias, secretKey);
-
             // Tiến hành mã hóa một số trường nhạy cảm
             encryptedInfoAccount.setCustomerID(AESUtil.encrypt(String.valueOf(infoAccount.getCustomerID()), secretKey));
             encryptedInfoAccount.setBranchID(AESUtil.encrypt(String.valueOf(infoAccount.getBranchID()), secretKey));
@@ -52,8 +45,13 @@ public class AccountService implements AccountServiceImpl {
             encryptedInfoAccount.setOpenDate(infoAccount.getOpenDate());
             encryptedInfoAccount.setCloseDate(infoAccount.getCloseDate());
 
-            // Thêm vào csdl
-            accountDAO.insert(encryptedInfoAccount);
+            // Thêm vào csdl và tạo Alias bằng accountID được auto_increment
+            String entryAlias = prefixEntryAlias + accountDAO.insert(encryptedInfoAccount);
+
+            // Lưu khóa bí mật vào KeyStore
+            KeyStoreManager keyStoreManager = new KeyStoreManager();
+            keyStoreManager.addEntry(entryAlias, secretKey);
+
             System.out.println("Account's infomation has been added.");
             return true;
         } catch (Exception e) {
@@ -88,7 +86,7 @@ public class AccountService implements AccountServiceImpl {
         return null;
     }
 
-    public boolean withdraw(double amount, String accountId) {
+    public boolean withdraw(String accountId, double amount) {
         Account acc = getAccount(accountId);
 
         // Nếu acc không tồn tại
@@ -118,7 +116,7 @@ public class AccountService implements AccountServiceImpl {
         return false;
     }
 
-    public boolean deposit(double amount, String accountId) {
+    public boolean deposit(String accountId, double amount) {
         Account acc = getAccount(accountId);
 
         // Nếu acc không tồn tại
@@ -142,7 +140,7 @@ public class AccountService implements AccountServiceImpl {
         return false;
     }
 
-    public boolean tranfer(String fromId, String toId, double amount) {
+    public boolean transfer(String fromId, String toId, double amount) {
         Account fromAcc = getAccount(fromId);
         Account toAcc = getAccount(toId);
         // Nếu acc không tồn tại
@@ -170,7 +168,7 @@ public class AccountService implements AccountServiceImpl {
 
             // ---------------------Tài khoản đích--------------------------
 
-            // // Cập nhật số tiền của tài khoản đích sau khi thực hiện giao dịch
+            // Cập nhật số tiền của tài khoản đích sau khi thực hiện giao dịch
             newBalance = toAcc.getBalance() + amount;
             toAcc.setBalance(newBalance);
 
@@ -187,8 +185,12 @@ public class AccountService implements AccountServiceImpl {
         TransactionDAO transactionDAO = new TransactionDAO();
         List<Transaction> transactions = new ArrayList<>();
         transactions = transactionDAO.getTransactionByAccId(id);
-        for(Transaction transaction : transactions){
+        for (Transaction transaction : transactions) {
             transaction.display();
         }
+    }
+
+    public void deleteAccount(String accountID) {
+
     }
 }

@@ -105,7 +105,7 @@ CREATE TABLE Employee
     phone varchar(50) UNIQUE,
     address nvarchar(200),
     email varchar(100) UNIQUE,
-
+	
     username varchar(100),
     CONSTRAINT PK_Employee PRIMARY KEY(employee_id),
     CONSTRAINT CHK_Employee_status CHECK (status IN (N'đang hoạt động', N'nghỉ việc', N'bị khóa'))
@@ -536,15 +536,13 @@ DELIMITER ;
 );
 
 -- user nào có role nào
-ALTER TABLE account_authen
-ADD UNIQUE (account_id);
-
 CREATE TABLE User_Roles
 (
     user_id VARCHAR(20) NOT NULL,
+    user_type nvarchar(100), 
     role_id INT NOT NULL,
-    PRIMARY KEY (user_id, role_id),
-    FOREIGN KEY (user_id) REFERENCES account_authen(account_id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, user_type,role_id),
+    FOREIGN KEY (user_id, user_type) REFERENCES account_authen(account_id, user_type) ON DELETE CASCADE,
     FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE CASCADE
 );
 
@@ -580,31 +578,34 @@ CREATE TABLE Role_Hierarchy
 -- Lấy tất cả các đặc quyền của một user
 DELIMITER //
 
-CREATE PROCEDURE get_all_permissions_of_user(IN input_user_id VARCHAR
-(20))
+CREATE PROCEDURE get_all_permissions_of_user(
+    IN input_user_id VARCHAR(20),
+    IN input_user_type VARCHAR(20)
+)
 BEGIN
-    WITH RECURSIVE inherited_roles AS
-                                        (
-        -- Bước khởi đầu: lấy tất cả role_id của user
-                                            SELECT role_id AS current_role_id
+    WITH RECURSIVE inherited_roles AS (
+        -- lấy vai trò trực tiếp của user có ID và TYPE
+        SELECT role_id AS current_role_id
         FROM user_roles
-        WHERE user_id = input_user_id
+        WHERE user_id = input_user_id AND user_type = input_user_type
 
-    UNION
+        UNION
 
-        -- Bước đệ quy: lấy các child role từ vai trò cha
+        -- đệ quy lấy vai trò kế thừa
         SELECT rh.child_role_id
         FROM role_hierarchy rh
         JOIN inherited_roles ir ON rh.parent_role_id = ir.current_role_id
     )
-    -- Truy xuất các permission_name
-    SELECT DISTINCT p.permission_name
+    -- Lấy tất cả các quyền từ các vai trò thu được
+    SELECT DISTINCT p.permission_id, p.permission_name
     FROM inherited_roles ir
         JOIN role_permissions rp ON ir.current_role_id = rp.role_id
-        JOIN Permissions p ON p.permission_id = rp.permission_id;
+        JOIN permissions p ON p.permission_id = rp.permission_id;
 END;
 //
+
 DELIMITER ;
+
 
 
 
@@ -629,8 +630,13 @@ values
     ("WITHDRAW_FUNDS"),
     ("TRANSFER_FUNDS"),
     ("VIEW_TRANSACTION_HISTORY"),
-    ("VIEW_ALL_USER");
-
+    ("VIEW_ALL_USER_ACCOUNT"),
+    ("VIEW_ACCOUNT_INFO"),
+	("ADD_CUSTOMER"),
+    ("ADD_EMPLOYEE"),
+    ("VIEW_EMPLOYEE_INFO"),
+    ("VIEW_ALL_CUSTOMER"),
+	("VIEW_ALL_EMPLOYEE");
 
 
 insert into Role_Hierarchy
@@ -653,7 +659,14 @@ values
     (1, 6),
     (1, 7),
     (2, 7),
-    (3, 8);
+    (3, 8),
+    (1, 9),
+    (1, 10),
+    (3, 11),
+    (2, 12),
+    (3, 13),
+    (3, 14);
+    
 
 SELECT *
 FROM Roles;
@@ -663,3 +676,15 @@ select *
 from Role_Hierarchy;
 select *
 from Role_Permissions;
+
+
+-- Thêm Admin
+
+create table Admin (
+	admin_id varchar(20) not null,
+	admin_name nvarchar(100) not null,
+    admin_email nvarchar(100) not null,
+    regiter_day date,
+    primary key (admin_id),
+    foreign key (admin_id) references account_authen(user_id)
+)

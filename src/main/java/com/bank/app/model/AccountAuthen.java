@@ -6,7 +6,7 @@ package com.bank.app.model;
 public class AccountAuthen {
     private String username;
     private String password;
-    private String userType; // (customer, employee)
+    private String userType; // (customer, employee, admin)
     private String account_id;
     private String salt;
 

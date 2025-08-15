@@ -18,6 +18,7 @@ import com.bank.app.security.keyStore.*;
 import com.bank.app.security.symmetricEncryption.*;
 
 public class CustomerService implements CustomerServiceImpl {
+    private static final String prefixEntryAlias = "customer_secretkey_id_";
     private CustomerDAO customerDAO = null;
 
     public CustomerService() {
@@ -39,13 +40,6 @@ public class CustomerService implements CustomerServiceImpl {
             keyGen.init(128);
             SecretKey secretKey = keyGen.generateKey();
 
-            // Tạo Alias bằng CustomerID
-            String entryAlias = String.valueOf(infoCustomer.getCustomerID());
-
-            // Lưu khóa bí mật vào KeyStore
-            KeyStoreManager keyStoreManager = new KeyStoreManager();
-            keyStoreManager.addEntry(entryAlias, secretKey);
-
             // Tiến hành mã hóa một số trường nhạy cảm
             encryptedInfoCustomer.setCustomerID(infoCustomer.getCustomerID());
             encryptedInfoCustomer.setName(AESUtil.encrypt(infoCustomer.getName(), secretKey));
@@ -59,8 +53,14 @@ public class CustomerService implements CustomerServiceImpl {
             encryptedInfoCustomer.setType(infoCustomer.getType());
             encryptedInfoCustomer.setStatus(infoCustomer.getStatus());
             encryptedInfoCustomer.setRegisterDate((infoCustomer.getRegisterDate()));
-            // Thêm vào csdl bằng DAO
-            customerDAO.insert(encryptedInfoCustomer);
+
+            // Thêm vào csdl bằng DAO và tạo Alias bằng CustomerID
+            String entryAlias = prefixEntryAlias + customerDAO.insert(encryptedInfoCustomer);
+
+            // Lưu khóa bí mật vào KeyStore
+            KeyStoreManager keyStoreManager = new KeyStoreManager();
+            keyStoreManager.addEntry(entryAlias, secretKey);
+
             System.out.println("Customer's infomation has been added.");
             return true;
         } catch (Exception e) {

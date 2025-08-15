@@ -45,7 +45,7 @@ public class AccountAuthenDAO extends DAO<AccountAuthen> {
     }
 
     @Override
-    public void insert(AccountAuthen user) {
+    public String insert(AccountAuthen user) {
         Connection conn = null;
         PreparedStatement pst = null;
 
@@ -63,7 +63,7 @@ public class AccountAuthenDAO extends DAO<AccountAuthen> {
             int count = pst.executeUpdate();
 
             System.out.println(count + " rows affected");
-
+            return null;
         } catch (SQLException e) {
             if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) { // Trùng khóa chính
                 System.out.println("Duplicate key detected. Please change another username!!");
@@ -74,11 +74,12 @@ public class AccountAuthenDAO extends DAO<AccountAuthen> {
         } finally {
             this.close(conn, pst);
         }
+        return null;
     }
 
     @Override
     public void update(AccountAuthen newUser, String id) {
-        
+
     }
 
     public void delete(AccountAuthen deletedUser) {

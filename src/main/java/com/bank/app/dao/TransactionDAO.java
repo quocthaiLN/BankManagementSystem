@@ -8,8 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
-
-public class TransactionDAO extends DAO<Transaction>{
+public class TransactionDAO extends DAO<Transaction> {
 
     public Transaction getTransactionByID(String transactionID) {
         Connection con = null;
@@ -47,7 +46,7 @@ public class TransactionDAO extends DAO<Transaction>{
         return null;
     }
 
-    public List<Transaction> getTransactionByAccId(String accountID){
+    public List<Transaction> getTransactionByAccId(String accountID) {
         List<Transaction> transactions = new ArrayList<>();
         Connection con = null;
         PreparedStatement pst = null;
@@ -87,8 +86,34 @@ public class TransactionDAO extends DAO<Transaction>{
     }
 
     @Override
-    public void insert(Transaction trans) {
+    public String insert(Transaction trans) {
+        Connection con = null;
+        PreparedStatement pst = null;
+        try {
+            con = this.getConnection();
+            String query = "INSERT INTO transaction(transaction_id, from_id, to_id, transaction_type, amount, currency, date, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+            pst = con.prepareStatement(query);
 
+            pst.setString(1, trans.getTransactionID());
+            pst.setString(2, trans.getFromAccount());
+            pst.setString(3, trans.getToAccount());
+            pst.setString(4, trans.getTransactionType());
+            pst.setDouble(5, trans.getAmount());
+            pst.setString(6, trans.getCurrency());
+            pst.setDate(7, Date.valueOf(trans.getDate()));
+            pst.setString(8, trans.getStatus());
+
+            int affectedRows = pst.executeUpdate();
+            if (affectedRows > 0) {
+                return trans.getTransactionID(); // trả về ID nếu thành công
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Insert transaction error: " + e);
+        } finally {
+            this.close(con, pst, null);
+        }
+        return null;
     }
 
     @Override
