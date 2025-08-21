@@ -2,8 +2,11 @@ package com.bank.app.dao;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bank.app.model.Customer;
+import com.bank.app.model.Transaction;
 
 public class CustomerDAO extends DAO<Customer> {
 
@@ -186,5 +189,50 @@ public class CustomerDAO extends DAO<Customer> {
         }
 
         return false;
+    }
+
+    public List<Customer> getAllCustomers() {
+        List<Customer> customers = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            con = this.getConnection();
+            String query = "SELECT * FROM customer";
+            pst = con.prepareStatement(query);
+
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString(1);
+                String name = rs.getString(2);
+
+                LocalDate birthDate = null;
+                Date sqlOpenDate = rs.getDate(3);
+                if (sqlOpenDate != null)
+                    birthDate = sqlOpenDate.toLocalDate();
+
+                String sex = rs.getString(4);
+                String identityNum = rs.getString(5);
+                String phone = rs.getString(6);
+                String addr = rs.getString(7);
+                String email = rs.getString(8);
+                String type = rs.getString(9);
+                String status = rs.getString(10);
+
+                LocalDate registerDate = null;
+                sqlOpenDate = rs.getDate(11);
+                if (sqlOpenDate != null)
+                    registerDate = sqlOpenDate.toLocalDate();
+
+                customers.add(new Customer(id, name, birthDate, sex, identityNum, phone, addr, email, type, status, registerDate));
+            }
+            return customers;
+
+        } catch (SQLException e) {
+            System.out.println("get all customer methods error: " + e);
+        } finally {
+            this.close(con, pst, rs);
+        }
+        return new ArrayList<>();
     }
 }

@@ -7,6 +7,10 @@ public class Permission {
     public Permission() {
     }
 
+    public Permission(String name) {
+        this.permissionName = name;
+    }
+
     public Permission(int permissionID, String permissionName) {
         this.permissionID = permissionID;
         this.permissionName = permissionName;

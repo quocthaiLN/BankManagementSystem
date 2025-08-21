@@ -7,6 +7,7 @@ import com.bank.app.security.keyStore.*;
 import com.bank.app.security.symmetricEncryption.*;
 
 import java.security.KeyStore;
+import java.util.List;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -23,6 +24,11 @@ public class CustomerService implements CustomerServiceImpl {
 
     public CustomerService() {
         this.customerDAO = new CustomerDAO();
+    }
+
+    @Override
+    public List<Customer> getAllCustomers() {
+        return customerDAO.getAllCustomers();
     }
 
     @Override

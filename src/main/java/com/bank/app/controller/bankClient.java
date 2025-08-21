@@ -32,15 +32,21 @@ public class bankClient {
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        System.out.print("Nhap vao thong tin gui den server(stop de dung): ");
-        String message = scan.nextLine();
-        while(!message.equalsIgnoreCase("stop")){
+
+        while(true){
+            System.out.print("Nhap vao thong tin gui den server(stop de dung): ");
+            String message = scan.nextLine();
             out.println(message);
+
+            if(message.equalsIgnoreCase("stop")) {
+                System.out.println("Dang dong ket noi...");
+                break;
+            }
+
             String response = in.readLine();
             System.out.println("Server tra loi: " + response);
-            System.out.print("Nhap vao thong tin gui den server(stop de dung): ");
-            message = scan.nextLine();
         }
+
         scan.close();
 
         socket.close();

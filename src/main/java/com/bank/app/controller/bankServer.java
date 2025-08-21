@@ -1,5 +1,9 @@
 package com.bank.app.controller;
 
+import com.bank.app.model.Permission;
+import com.bank.app.model.PermissionNames;
+import com.bank.app.service.AccountService.AccountService;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -8,7 +12,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.security.KeyStore;
-import java.util.Scanner;
+import java.util.*;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -109,6 +113,69 @@ public class bankServer {
 			this.sslSocket = sslSocket;
 		}
 
+		// Trả về <Permission, response>
+		public Map<Permission, String> handleRequest(String request) {
+			HashMap<Permission, String> map = new HashMap<>();
+			Permission perm = null;
+			String response = "success";
+
+			String command = request.toUpperCase();
+
+			switch (command) {
+				case "WITHDRAW_FUNDS":
+					perm = new Permission(PermissionNames.getWithdrawFunds());
+					// logic rut tiền
+					break;
+				case "VIEW_ALL_CUSTOMER":
+					perm = new Permission(PermissionNames.getViewAllCustomer());
+					break;
+				case "ADD_CUSTOMER":
+					perm = new Permission(PermissionNames.getAddCustomer());
+					break;
+				case "DELETE_ACCOUNT":
+					perm = new Permission(PermissionNames.getDeleteAccount());
+					break;
+				case "CREATE_ACCOUNT":
+					perm = new Permission(PermissionNames.getCreateAccount());
+					break;
+				case "VIEW_CUSTOMER_INFO":
+					perm = new Permission(PermissionNames.getViewCustomer());
+					break;
+				case "VIEW_ACCOUNT_INFO":
+					perm = new Permission(PermissionNames.getViewAccount());
+					break;
+				case "DEPOSIT_FUNDS":
+					perm = new Permission(PermissionNames.getDepositFunds());
+					break;
+				case "TRANSFER_FUNDS":
+					perm = new Permission(PermissionNames.getTransferFunds());
+					break;
+				case "VIEW_TRANSACTION_HISTORY":
+					perm = new Permission(PermissionNames.getViewTransactionHistory());
+					break;
+				case "ADD_EMPLOYEE":
+					perm = new Permission(PermissionNames.getAddEmployee());
+					break;
+				case "VIEW_EMPLOYEE_INFO":
+					perm = new Permission(PermissionNames.getViewEmployee());
+					break;
+				case "VIEW_ALL_USER_ACCOUNT":
+					perm = new Permission(PermissionNames.getViewAllUserAccount());
+					break;
+				case "VIEW_ALL_EMPLOYEE":
+					perm = new Permission(PermissionNames.getViewAllEmployee());
+					break;
+				default:
+					perm = new Permission("UNKNOWN COMMAND");
+					response = "failed";
+			}
+
+			map.put(perm, response);
+
+			return map;
+		}
+
+		@Override
 		public void run() {
 
 			try {
@@ -121,19 +188,28 @@ public class bankServer {
 
 				BufferedReader read = new BufferedReader(new InputStreamReader(input));
 				PrintWriter write = new PrintWriter(new OutputStreamWriter(output), true);
-				Scanner scan = new Scanner(System.in);
 				String line = null;
 				while ((line = read.readLine()) != null) {
 
 					System.out.println("Client: " + line);
-					System.out.print("Server: ");
-					String respond = scan.nextLine();
-					write.println(respond);
 					if (line.trim().equalsIgnoreCase("stop")) {
 						break;
 					}
+
+					Map<Permission, String> ans = handleRequest(line);
+					String respond = "failed";
+					if(ans != null && !ans.isEmpty()) {
+						// Lấy request đầu
+						for(Permission perms : ans.keySet()) {
+							respond = perms.getPermissionName() + " " + ans.get(perms);
+							break;
+						}
+					}
+
+					System.out.println("Server response to client: " + respond);
+
+ 					write.println(respond);
 				}
-				scan.close();
 				sslSocket.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
