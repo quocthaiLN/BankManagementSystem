@@ -1,5 +1,7 @@
 package com.bank.app.service.AccountService;
 
+import java.util.List;
+
 import com.bank.app.model.Account;
 
 public interface AccountServiceImpl {
@@ -16,5 +18,7 @@ public interface AccountServiceImpl {
     public void viewTransactionHistory(String id);
 
     public void deleteAccount(String accountID);
+
+    public List<Account> getAllAccount();
 
 }

@@ -1,11 +1,55 @@
 package com.bank.app.dao;
 
 import com.bank.app.model.Account;
+import com.bank.app.model.Customer;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccountDAO extends DAO<Account> {
+
+    public List<Account> getAllAccounts() {
+        List<Account> accounts = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            con = this.getConnection();
+            String query = "SELECT * FROM ACCOUNT";
+            pst = con.prepareStatement(query);
+
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                String accId = rs.getString(1);
+                String cusId = rs.getString(2);
+                String branchId = rs.getString(3);
+                String accType = rs.getString(4);
+                String currency = rs.getString(5);
+                double balance = rs.getInt(6);
+                String status = rs.getString(7);
+
+                LocalDate openDate = null;
+                Date sqlOpenDate = rs.getDate(8);
+                if (sqlOpenDate != null)
+                    openDate = sqlOpenDate.toLocalDate();
+
+                LocalDate closeDate = null;
+                Date sqlCloseDate = rs.getDate(9);
+                if (sqlCloseDate != null)
+                    closeDate = sqlCloseDate.toLocalDate();
+                accounts.add(new Account(accId, cusId, branchId, accType, currency, balance, status, openDate, closeDate));
+            }
+            return accounts;
+
+        } catch (SQLException e) {
+            System.out.println("get all customer methods error: " + e);
+        } finally {
+            this.close(con, pst, rs);
+        }
+        return new ArrayList<>();
+    }
 
     public Account getAccountByCustomerID(String customerID) {
         Connection conn = null;

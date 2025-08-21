@@ -1,5 +1,7 @@
 package com.bank.app.service.EmployeeService;
 
+import java.util.List;
+
 import com.bank.app.model.Employee;
 
 public interface EmployeeServiceImpl {
@@ -7,4 +9,5 @@ public interface EmployeeServiceImpl {
 
     public void addEmployee(Employee infoEmployee);
 
+    public List<Employee> getAllEmployee();
 }

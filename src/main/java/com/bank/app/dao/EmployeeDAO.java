@@ -4,6 +4,8 @@ import com.bank.app.model.Employee;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmployeeDAO extends DAO<Employee> {
 
@@ -136,5 +138,43 @@ public class EmployeeDAO extends DAO<Employee> {
         }
 
         return false;
+    }
+    public List<Employee> getAllEmployees() {
+        List<Employee> employees = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            con = this.getConnection();
+            String query = "SELECT * FROM Employee";
+            pst = con.prepareStatement(query);
+
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                String empId = rs.getString(1);
+                String name = rs.getString(2);
+                String phone = rs.getString(3);
+                String address = rs.getString(4);
+                String email = rs.getString(5);
+                String branchId = rs.getString(6);
+                String role = rs.getString(7);
+                String status = rs.getString(8);
+
+                LocalDate createdAt = null;
+                Date sqlCreatedAt = rs.getDate(9);
+                if (sqlCreatedAt != null)
+                    createdAt = sqlCreatedAt.toLocalDate();
+
+                String username = rs.getString(10);
+                employees.add(new Employee(empId, name, phone, address, email, branchId, role, status, createdAt, username));
+            }
+            return employees;
+
+        } catch (SQLException e) {
+            System.out.println("get all customer methods error: " + e);
+        } finally {
+            this.close(con, pst, rs);
+        }
+        return new ArrayList<>();
     }
 }

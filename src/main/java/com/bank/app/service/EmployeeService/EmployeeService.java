@@ -3,6 +3,9 @@ package com.bank.app.service.EmployeeService;
 import com.bank.app.dao.EmployeeDAO;
 import com.bank.app.model.Account;
 import com.bank.app.model.Employee;
+
+import java.util.List;
+
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import com.bank.app.security.keyStore.KeyStoreManager;
@@ -84,6 +87,11 @@ public class EmployeeService implements EmployeeServiceImpl {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<Employee> getAllEmployee(){
+        List<Employee> list = employeeDAO.getAllEmployees();
+        return list;
     }
 
 }

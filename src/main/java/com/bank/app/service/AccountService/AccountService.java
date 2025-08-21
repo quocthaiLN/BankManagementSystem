@@ -190,6 +190,11 @@ public class AccountService implements AccountServiceImpl {
         }
     }
 
+    public List<Account> getAllAccount(){
+        List<Account> list = accountDAO.getAllAccounts();
+        return list;
+    }
+
     public void deleteAccount(String accountID) {
 
     }
