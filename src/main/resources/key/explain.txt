@@ -1,0 +1,4 @@
+KeyStore.jceks:Luu khoa bi mat de giai ma, ma hoa thong tin trong csdl.
+server_keystore.jks: Luu khoa bi mat, certificate cua server.
+server_cert.cer: certificate, chung nhan rang server nay dang tin cay.
+client_struststore.jks: duoc luu ben may client, ben trong chua certificate cua server, dung de so sanh xem certificate no ket noi vao co khop voi certificate chua trong .jks nay hay khong, neu khop thi dang tin cay.
